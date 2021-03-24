@@ -15,7 +15,7 @@
 
 ##### 请求URL
 
-- ` http://xx.com/user/check `
+- ` http://xx.com/user/login`
 
 ##### 请求方式
 
@@ -38,25 +38,27 @@
       "phone": "13000000001",
       "age": 20,
       "gender": "男" ,
-      "address": "武汉市洪山区珞喻路129号武汉大学信息学部"
+      "address": "武汉市洪山区珞喻路129号武汉大学信息学部",
+      "role": 1
     }
   }
 ```
 
 ##### 返回参数说明 
 
-| 参数名   | 类型   | 说明         |
-| :------- | :----- | ------------ |
-| uid      | string | 队员id       |
-| username | string | 队员姓名     |
-| phone    | string | 队员电话号码 |
-| age      | number | 队员年龄     |
-| gender   | string | 队员性别     |
-| address  | string | 队员家庭住址 |
+| 参数名   | 类型   | 说明                           |
+| :------- | :----- | ------------------------------ |
+| uid      | string | 队员id                         |
+| username | string | 队员姓名                       |
+| phone    | string | 队员电话号码                   |
+| age      | number | 队员年龄                       |
+| gender   | string | 队员性别                       |
+| address  | string | 队员家庭住址                   |
+| role     | number | 用户角色，0为队员，1为普通用户 |
 
 ##### 备注 
 
-- 如果队员不再已注册列表中，则返回的msg为"fail"
+- 如果队员不再已注册列表中，则说明角色为普通用户。
 
 
 

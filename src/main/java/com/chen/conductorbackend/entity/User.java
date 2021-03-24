@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author chen
- * @since 2021-03-23
+ * @since 2021-03-24
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -53,6 +53,9 @@ public class User implements Serializable {
     private Long gmtCreate;
 
     private Long gmtModified;
+
+    @ApiModelProperty(value = "角色 0为队员 1为普通成员")
+    private Integer role;
 
 
 }
