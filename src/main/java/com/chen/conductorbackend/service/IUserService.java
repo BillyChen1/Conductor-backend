@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>
- * 队员表 服务类
+ * 用户表 服务类
  * </p>
  *
  * @author chen

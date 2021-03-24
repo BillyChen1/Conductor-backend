@@ -10,8 +10,8 @@ public class TaskPostDTO {
     @ApiModelProperty(name = "lostName", value = "走失者姓名", dataType = "String", required = true)
     private String lostName;
 
-    @ApiModelProperty(name = "lostAge", value = "走失者年龄", dataType = "Integer", required = true)
-    private Integer lostAge;
+    @ApiModelProperty(name = "lostBirth", value = "走失者出生年月", dataType = "Integer", required = true)
+    private Integer lostBirth;
 
     @ApiModelProperty(name = "lostGender", value = "走失者性别", dataType = "String", required = true)
     private String lostGender;

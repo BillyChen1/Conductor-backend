@@ -1,6 +1,7 @@
 package com.chen.conductorbackend.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import java.time.LocalDate;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
@@ -61,7 +62,7 @@ public class Task implements Serializable {
     private Long gmtModified;
 
     @ApiModelProperty(value = "走失者年龄")
-    private Integer lostAge;
+    private LocalDate lostBirth;
 
 
 }

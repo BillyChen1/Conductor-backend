@@ -48,7 +48,7 @@
 
 | 参数名   | 类型   | 说明                           |
 | :------- | :----- | ------------------------------ |
-| uid      | string | 队员id                         |
+| uid      | string | 用户id                         |
 | username | string | 队员姓名                       |
 | phone    | string | 队员电话号码                   |
 | age      | number | 队员年龄                       |
@@ -58,11 +58,11 @@
 
 ##### 备注 
 
-- 如果队员不再已注册列表中，则说明角色为普通用户。
+- 如果队员不在已注册列表中，则说明角色为普通用户。
 
 
 
-## 2. 获取一名用户的信息
+## 2. 获取一名用户的基本信息
 
 ##### 简要描述
 
@@ -89,25 +89,27 @@
       "phone": "13000000001",
       "age": 20,
       "gender": "男" ,
-      "address": "武汉市洪山区珞喻路129号武汉大学信息学部"
+      "address": "武汉市洪山区珞喻路129号武汉大学信息学部",
+      "role":0
     }
   }
 ```
 
 ##### 返回参数说明 
 
-| 参数名   | 类型   | 说明         |
-| :------- | :----- | ------------ |
-| uid      | string | 队员id       |
-| username | string | 队员姓名     |
-| phone    | string | 队员电话号码 |
-| age      | number | 队员年龄     |
-| gender   | string | 队员性别     |
-| address  | string | 队员家庭住址 |
+| 参数名   | 类型   | 说明                           |
+| :------- | :----- | ------------------------------ |
+| uid      | string | 用户id                         |
+| username | string | 队员姓名                       |
+| phone    | string | 队员电话号码                   |
+| age      | number | 队员年龄                       |
+| gender   | string | 队员性别                       |
+| address  | string | 队员家庭住址                   |
+| role     | number | 用户角色，0为队员，1为普通用户 |
 
 ##### 备注 
 
-- 如果队员不再已注册列表中，则返回的msg为"fail"
+- 如果队员不在已注册列表中，则说明角色为普通用户。
 
 
 ## 3. 更新一个队员的地理位置
@@ -160,17 +162,17 @@
 
 ##### 参数
 
-| 参数名      | 必选 | 类型   | 说明             |
-| :---------- | :--- | :----- | ---------------- |
-| lostName    | 是   | string | 走失者姓名       |
-| lostAge     | 是   | number | 走失者年龄       |
-| lostGender  | 是   | string | 走失者性别       |
-| photo       | 是   | string | 走失者的图片url  |
-| latitude    | 是   | number | 走失地点的纬度   |
-| longitude   | 是   | number | 走失地点的经度   |
-| lostAddress | 否   | string | 走失者的家庭住址 |
-| lostPhone   | 否   | string | 家属的联系方式   |
-| detail      | 否   | string | 补充信息         |
+| 参数名      | 必选 | 类型   | 说明                      |
+| :---------- | :--- | :----- | ------------------------- |
+| lostName    | 是   | string | 走失者姓名                |
+| lostBirth   | 是   | string | 走失者出生年月 yyyy-MM-dd |
+| lostGender  | 是   | string | 走失者性别                |
+| photo       | 是   | string | 走失者的图片url           |
+| latitude    | 是   | number | 走失地点的纬度            |
+| longitude   | 是   | number | 走失地点的经度            |
+| lostAddress | 否   | string | 走失者的家庭住址          |
+| lostPhone   | 否   | string | 家属的联系方式            |
+| detail      | 否   | string | 补充信息                  |
 
 ##### 返回示例 
 
@@ -198,17 +200,17 @@
 
 ##### 参数
 
-| 参数名      | 必选 | 类型   | 说明             |
-| :---------- | :--- | :----- | ---------------- |
-| lostName    | 是   | string | 走失者姓名       |
-| lostAge     | 是   | number | 走失者年龄       |
-| lostGender  | 是   | string | 走失者性别       |
-| photo       | 是   | string | 走失者的图片url  |
-| latitude    | 是   | number | 走失地点的纬度   |
-| longitude   | 是   | number | 走失地点的经度   |
-| lostAddress | 否   | string | 走失者的家庭住址 |
-| lostPhone   | 否   | string | 家属的联系方式   |
-| detail      | 否   | string | 补充信息         |
+| 参数名      | 必选 | 类型   | 说明                      |
+| :---------- | :--- | :----- | ------------------------- |
+| lostName    | 是   | string | 走失者姓名                |
+| lostBirth   | 是   | string | 走失者出生年月 yyyy-MM-dd |
+| lostGender  | 是   | string | 走失者性别                |
+| photo       | 是   | string | 走失者的图片url           |
+| latitude    | 是   | number | 走失地点的纬度            |
+| longitude   | 是   | number | 走失地点的经度            |
+| lostAddress | 否   | string | 走失者的家庭住址          |
+| lostPhone   | 否   | string | 家属的联系方式            |
+| detail      | 否   | string | 补充信息                  |
 
 ##### 返回示例 
 
@@ -730,14 +732,14 @@
 
 ##### 参数
 
-| 参数名   | 必选 | 类型   | 说明         |
-| :------- | :--- | :----- | ------------ |
-| username | 是   | string | 队员姓名     |
-| phone    | 是   | string | 队员电话号码 |
-| wxId     | 是   | string | 队员微信号   |
-| age      | 是   | number | 队员年龄     |
-| gender   | 是   | string | 队员性别     |
-| address  | 是   | string | 队员家庭住址 |
+| 参数名   | 必选 | 类型   | 说明                    |
+| :------- | :--- | :----- | ----------------------- |
+| username | 是   | string | 队员姓名                |
+| phone    | 是   | string | 队员电话号码            |
+| wxId     | 是   | string | 队员微信号              |
+| birth    | 是   | string | 队员出生年月 yyyy-MM-dd |
+| gender   | 是   | string | 队员性别                |
+| address  | 是   | string | 队员家庭住址            |
 
 
 ##### 返回示例 
@@ -792,14 +794,14 @@
 
 ##### 参数
 
-| 参数名   | 必选 | 类型   | 说明         |
-| :------- | :--- | :----- | ------------ |
-| username | 否   | string | 队员姓名     |
-| phone    | 否   | string | 队员电话号码 |
-| wxId     | 否   | string | 队员微信号   |
-| age      | 否   | number | 队员年龄     |
-| gender   | 否   | string | 队员性别     |
-| address  | 否   | string | 队员家庭住址 |
+| 参数名   | 必选 | 类型   | 说明                    |
+| :------- | :--- | :----- | ----------------------- |
+| username | 否   | string | 队员姓名                |
+| phone    | 否   | string | 队员电话号码            |
+| wxId     | 否   | string | 队员微信号              |
+| birth    | 否   | string | 队员出生年月 yyyy-MM-dd |
+| gender   | 否   | string | 队员性别                |
+| address  | 否   | string | 队员家庭住址            |
 
 
 ##### 返回示例 

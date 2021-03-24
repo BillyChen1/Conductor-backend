@@ -1,6 +1,7 @@
 package com.chen.conductorbackend.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import java.time.LocalDate;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
@@ -10,7 +11,7 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 队员表
+ * 用户表
  * </p>
  *
  * @author chen
@@ -18,7 +19,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="User对象", description="队员表")
+@ApiModel(value="User对象", description="用户表")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -32,8 +33,8 @@ public class User implements Serializable {
     @ApiModelProperty(value = "性别")
     private String gender;
 
-    @ApiModelProperty(value = "出生年份")
-    private Integer birth;
+    @ApiModelProperty(value = "出生年月")
+    private LocalDate birth;
 
     @ApiModelProperty(value = "队员家庭住址")
     private String address;
