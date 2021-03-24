@@ -27,4 +27,14 @@ public enum Role {
     public void setRole(String role) {
         this.role = role;
     }
+
+    //已知枚举类型代表的整数，返回中文状态
+    public static String nameOf(Integer code) {
+        for (Role role : Role.values()) {
+            if (code == role.getCode()) {
+                return role.getRole();
+            }
+        }
+        return "";
+    }
 }
