@@ -7,7 +7,7 @@
 
 - 注意： 标有星号的接口可能会在后台管理系统中用到
 
-## 1. 校验当前队员是否在已注册的队员当中
+## 1. 用户登录
 
 ##### 简要描述
 
@@ -31,15 +31,17 @@
 
 ``` 
   {
+  	"code": 0
     "msg": "ok",
     "data": {
-      "uid": "1",
+      "uid": 1,
       "username": "张三",
       "phone": "13000000001",
       "age": 20,
       "gender": "男" ,
       "address": "武汉市洪山区珞喻路129号武汉大学信息学部",
-      "role": 1
+      "role": 1,
+      "token":"xxx"
     }
   }
 ```
@@ -48,17 +50,20 @@
 
 | 参数名   | 类型   | 说明                           |
 | :------- | :----- | ------------------------------ |
-| uid      | string | 用户id                         |
+| uid      | number | 用户id                         |
 | username | string | 队员姓名                       |
 | phone    | string | 队员电话号码                   |
 | age      | number | 队员年龄                       |
 | gender   | string | 队员性别                       |
 | address  | string | 队员家庭住址                   |
 | role     | number | 用户角色，0为队员，1为普通用户 |
+| token    | string | token                          |
 
 ##### 备注 
 
-- 如果队员不在已注册列表中，则说明角色为普通用户。
+- 后台根据微信号查用户表，如果是队员，则登陆成功，返回的对象中role为0
+- 如果是普通用户，则返回的对象中role为1
+- 如果是在用户表中查不到，则登录失败。
 
 
 
@@ -82,9 +87,10 @@
 
 ``` 
   {
+  	"code": 0
     "msg": "ok",
     "data": {
-      "uid": "1",
+      "uid": 1,
       "username": "张三",
       "phone": "13000000001",
       "age": 20,
@@ -130,7 +136,7 @@
 
 | 参数名    | 必选 | 类型   | 说明         |
 | :-------- | :--- | :----- | ------------ |
-| uid       | 是   | string | 队员id       |
+| uid       | 是   | number | 队员id       |
 | latitude  | 是   | number | 队员所在纬度 |
 | longitude | 是   | number | 队员所在经度 |
 
@@ -139,6 +145,7 @@
 
 ``` 
   {
+  	"code": 0
     "msg": "ok",
     "data": {
     }
@@ -178,6 +185,7 @@
 
 ``` 
   {
+  	"code": 0
     "msg": "ok",
     "data": {
     }
@@ -216,6 +224,7 @@
 
 ``` 
   {
+  	"code": 0
     "msg": "ok",
     "data": {
     }
@@ -241,9 +250,10 @@
 
 ``` 
   {
+  	"code": 0
     "msg": "ok",
     "data": {
-		"requestId":"1",
+		"requestId":1,
 		"lostName":"张三",
 		"lostAge":70,
 		"lostGender":"男",
@@ -266,7 +276,7 @@
 
 | 参数名      | 类型   | 说明                                                         |
 | :---------- | :----- | ------------------------------------------------------------ |
-| requestId   | string | 救援请求id                                                   |
+| requestId   | number | 救援请求id                                                   |
 | lostName    | string | 走失者姓名                                                   |
 | lostAge     | number | 走失者年龄                                                   |
 | lostGender  | string | 走失者性别                                                   |
@@ -303,16 +313,17 @@
 | 参数名 | 必选 | 类型   | 说明                                                         |
 | :----- | :--- | :----- | ------------------------------------------------------------ |
 | status | 否   | number | 期望得到指定状态的报案信息。空表示对返回信息的状态值没有限定，0表示未受理，1表示进行中，2表示已完成，3表示已超时 |
-| uid    | 否   | string | 队员id。期望得到该队员接手的救援请求。空表示对队员没有限定。 |
+| uid    | 否   | number | 队员id。期望得到该队员接手的救援请求。空表示对队员没有限定。 |
 
 ##### 返回示例 
 
 ``` 
   {
+  	"code": 0
     "msg": "ok",
     "data": [
 		{
-			"requestId":"1",
+			"requestId":1,
 			"lostName":"张三",
 			"lostAge":70,
 			"lostGender":"男",
@@ -327,7 +338,7 @@
 			"gmtCreate":1615462781
 		},
 		{
-			"requestId":"2",
+			"requestId":2,
 			"lostName":"李四",
 			"lostAge":75,
 			"lostGender":"男",
@@ -348,7 +359,7 @@
 
 | 参数名      | 类型   | 说明                                                         |
 | :---------- | :----- | ------------------------------------------------------------ |
-| requestId   | string | 救援请求id                                                   |
+| requestId   | number | 救援请求id                                                   |
 | lostName    | string | 走失者姓名                                                   |
 | lostAge     | number | 走失者年龄                                                   |
 | lostGender  | string | 走失者性别                                                   |
@@ -389,10 +400,11 @@
 
 ``` 
   {
+  	"code": 0
     "msg": "ok",
     "data": [
 		{
-			"requestId":"1",
+			"requestId":1,
 			"lostName":"张三",
 			"lostAge":70,
 			"lostGender":"男",
@@ -407,7 +419,7 @@
 			"gmtCreate":1615462781
 		},
 		{
-			"requestId":"2",
+			"requestId":2,
 			"lostName":"李四",
 			"lostAge":75,
 			"lostGender":"男",
@@ -429,7 +441,7 @@
 
 | 参数名      | 类型   | 说明                                                         |
 | :---------- | :----- | ------------------------------------------------------------ |
-| requestId   | string | 救援请求id                                                   |
+| requestId   | number | 救援请求id                                                   |
 | lostName    | string | 走失者姓名                                                   |
 | lostAge     | number | 走失者年龄                                                   |
 | lostGender  | string | 走失者性别                                                   |
@@ -462,10 +474,11 @@
 
 ``` 
   {
+  	"code": 0
     "msg": "ok",
     "data": [
 		{
-			"requestId":"1",
+			"requestId":1,
 			"lostName":"张三",
 			"lostAge":70,
 			"lostGender":"男",
@@ -480,7 +493,7 @@
 			"gmtCreate":1615462781
 		},
 		{
-			"requestId":"2",
+			"requestId":2,
 			"lostName":"李四",
 			"lostAge":75,
 			"lostGender":男,
@@ -502,7 +515,7 @@
 
 | 参数名      | 类型   | 说明                                                         |
 | :---------- | :----- | ------------------------------------------------------------ |
-| requestId   | string | 救援请求id                                                   |
+| requestId   | number | 救援请求id                                                   |
 | lostName    | string | 走失者姓名                                                   |
 | lostAge     | number | 走失者年龄                                                   |
 | lostGender  | string | 走失者性别                                                   |
@@ -548,9 +561,10 @@
 
 ``` 
   {
+  	"code": 0
     "msg": "ok",
     "data": {
-		"requestId":"1",
+		"requestId":1,
 		"lostName":"张三",
 		"lostAge":70,
 		"lostGender":"男",
@@ -599,9 +613,10 @@
 
 ``` 
    {
+   	"code": 0
     "msg": "ok",
     "data": {
-		"requestId":"1",
+		"requestId":1,
 		"lostName":"张三",
 		"lostAge":70,
 		"lostGender":"男",
@@ -642,10 +657,11 @@
 
 ``` 
   {
+  	"code": 0
     "msg": "ok",
     "data": [
 		{
-			"uid": "1",
+			"uid": 1,
 			"username": "张三",
 			"phone": "13000000001",
 			"age": 20,
@@ -657,7 +673,7 @@
 			"gmtModified":1615462952,
 			"cases":[
 				{
-					"requestId":"2",
+					"requestId":2,
 					"lostName":"李四",
 					"lostAge":75,
 					"lostGender":"男",
@@ -681,7 +697,7 @@
 
 | 参数名      | 类型   | 说明                             |
 | :---------- | :----- | -------------------------------- |
-| uid         | string | 队员id                           |
+| uid         | number | 队员id                           |
 | username    | string | 队员姓名                         |
 | phone       | string | 队员电话号码                     |
 | age         | number | 队员年龄                         |
@@ -697,7 +713,7 @@
 
 | 参数名      | 类型   | 说明                                                         |
 | :---------- | :----- | ------------------------------------------------------------ |
-| requestId   | string | 救援请求id                                                   |
+| requestId   | number | 救援请求id                                                   |
 | lostName    | string | 走失者姓名                                                   |
 | lostAge     | number | 走失者年龄                                                   |
 | lostGender  | string | 走失者性别                                                   |
@@ -746,6 +762,7 @@
 
 ``` 
   {
+  	"code": 0
     "msg": "ok",
     "data":{}
   }
@@ -808,6 +825,7 @@
 
 ``` 
   {
+  	"code": 0
     "msg": "ok",
     "data":{}
   }
@@ -832,10 +850,11 @@
 
 ``` 
   {
+  	"code": 0
     "msg": "ok",
     "data": [
 		{
-			"uid": "1",
+			"uid": 1,
 			"username": "张三",
 			"phone": "13000000001",
 			"age": 20,
@@ -847,7 +866,7 @@
 			"gmtModified":1615462952,
 			"cases":[
 				{
-					"requestId":"2",
+					"requestId":2,
 					"lostName":"李四",
 					"lostAge":75,
 					"lostGender":"男",
@@ -871,7 +890,7 @@
 
 | 参数名      | 类型   | 说明                             |
 | :---------- | :----- | -------------------------------- |
-| uid         | string | 队员id                           |
+| uid         | number | 队员id                           |
 | username    | string | 队员姓名                         |
 | phone       | string | 队员电话号码                     |
 | age         | number | 队员年龄                         |
@@ -887,7 +906,7 @@
 
 | 参数名      | 类型   | 说明                                                         |
 | :---------- | :----- | ------------------------------------------------------------ |
-| requestId   | string | 救援请求id                                                   |
+| requestId   | number | 救援请求id                                                   |
 | lostName    | string | 走失者姓名                                                   |
 | lostAge     | number | 走失者年龄                                                   |
 | lostGender  | string | 走失者性别                                                   |
@@ -919,8 +938,11 @@
 
 ``` 
   {
+  	"code": 0
     "msg": "ok",
-    "url":"http://xxxxx"
+    "data" :{
+    	"url":"http://xxxxx"
+    }
   }
 ```
 
@@ -952,9 +974,12 @@
 ##### 返回示例 
 
 ``` 
-  {
+ {
+  	"code": 0
     "msg": "ok",
-    "url":"http://xxxxx"
+    "data" :{
+    	"url":"http://xxxxx"
+    }
   }
 ```
 
@@ -984,11 +1009,15 @@
 
 ```
 {
+	"code": 0
 	"msg": "ok"
+	"data":{
+		"token":xxx
+	}
 }
 ```
 
-| 参数名 | 类型 | 说明 |
-| ------ | ---- | ---- |
-|        |      |      |
+| 参数名 | 类型   | 说明  |
+| ------ | ------ | ----- |
+| token  | string | token |
 
