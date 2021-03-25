@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author chen
  * @since 2021-03-25
  */
-public interface ITaskService extends IService<Task> {
+public interface ITaskService {
 
 }

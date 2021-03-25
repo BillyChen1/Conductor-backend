@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2021-03-25
  */
 @Service
-public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements ITaskService {
+public class TaskServiceImpl implements ITaskService {
 
 }
