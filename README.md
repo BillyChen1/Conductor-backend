@@ -724,7 +724,7 @@
 
 ##### 请求URL
 
-- ` http://xx.com/user/admin/member `
+- ` http://xx.com/admin/user/member `
 
 ##### 请求方式
 
@@ -760,7 +760,7 @@
 
 ##### 请求URL
 
-- ` http://xx.com/user/admin/member/{uid} `
+- ` http://xx.com/admin/user/member/{uid} `
 
 ##### 请求方式
 
@@ -786,7 +786,7 @@
 
 ##### 请求URL
 
-- ` http://xx.com/user/member/{uid} `
+- ` http://xx.com/admin/user/member/{uid} `
 
 ##### 请求方式
 
@@ -822,7 +822,7 @@
 
 ##### 请求URL
 
-- ` http://xx.com/user/admin/member `
+- ` http://xx.com/admin/user/member `
 
 ##### 请求方式
 
