@@ -2,6 +2,7 @@ package com.chen.conductorbackend.mapper;
 
 import com.chen.conductorbackend.entity.Task;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
@@ -9,8 +10,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author chen
- * @since 2021-03-24
+ * @since 2021-03-25
  */
+@Mapper
 public interface TaskMapper extends BaseMapper<Task> {
 
 }
