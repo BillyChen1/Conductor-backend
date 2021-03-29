@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import java.time.LocalDate;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.util.Date;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -34,7 +36,7 @@ public class User implements Serializable {
     private String gender;
 
     @ApiModelProperty(value = "出生年月")
-    private LocalDate birth;
+    private Date birth;
 
     @ApiModelProperty(value = "队员家庭住址")
     private String address;
