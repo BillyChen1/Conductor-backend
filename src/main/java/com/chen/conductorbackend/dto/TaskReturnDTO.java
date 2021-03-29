@@ -1,12 +1,9 @@
 package com.chen.conductorbackend.dto;
 
-
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
-import java.io.Serializable;
-
+@Data
 public class TaskReturnDTO {
 
     @ApiModelProperty(value = "救援请求Id")
