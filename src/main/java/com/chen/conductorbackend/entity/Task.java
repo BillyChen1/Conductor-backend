@@ -1,13 +1,14 @@
 package com.chen.conductorbackend.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDate;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.sql.Date;
 
 /**
  * <p>
@@ -19,7 +20,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="Task对象", description="救援请求表")
+@ApiModel(value = "Task对象", description = "救援请求表")
 public class Task implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -62,7 +63,7 @@ public class Task implements Serializable {
     private Long gmtModified;
 
     @ApiModelProperty(value = "走失者年龄")
-    private LocalDate lostBirth;
+    private Date lostBirth;
 
 
 }
