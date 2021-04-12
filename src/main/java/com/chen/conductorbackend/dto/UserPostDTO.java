@@ -4,9 +4,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @ApiModel(description = "管理员上传用户信息的表单内容")
-public class UserPostDTO {
+public class UserPostDTO implements Serializable {
     @ApiModelProperty(name = "wxId", value = "队员微信号", dataType = "String")
     private String wxId;
 

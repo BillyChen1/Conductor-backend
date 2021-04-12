@@ -3,8 +3,10 @@ package com.chen.conductorbackend.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class TaskReturnDTO {
+public class TaskReturnDTO implements Serializable {
 
     @ApiModelProperty(value = "救援请求Id")
     private Integer requestId;

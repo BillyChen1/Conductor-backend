@@ -4,9 +4,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @ApiModel(description = "发布救援任务的表单内容")
-public class TaskPostDTO {
+public class TaskPostDTO implements Serializable {
     @ApiModelProperty(name = "lostName", value = "走失者姓名", dataType = "String", required = true)
     private String lostName;
 

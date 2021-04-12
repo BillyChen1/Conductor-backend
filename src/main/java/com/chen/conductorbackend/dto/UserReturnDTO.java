@@ -5,11 +5,12 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
 @ApiModel(description = "查询用户返回的结果")
-public class UserReturnDTO {
+public class UserReturnDTO implements Serializable {
     private Integer uid;
 
     @ApiModelProperty(name = "wxId", value = "队员微信号", dataType = "String")

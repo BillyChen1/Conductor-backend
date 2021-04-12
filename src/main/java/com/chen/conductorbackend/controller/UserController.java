@@ -4,6 +4,8 @@ package com.chen.conductorbackend.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chen.conductorbackend.common.BaseResult;
+import com.chen.conductorbackend.dto.RequestHandleDTO;
+import com.chen.conductorbackend.dto.TaskReturnDTO;
 import com.chen.conductorbackend.dto.UpdateLocationDTO;
 import com.chen.conductorbackend.dto.UserInfoDTO;
 import com.chen.conductorbackend.entity.Task;
@@ -16,6 +18,10 @@ import com.chen.conductorbackend.service.ITaskService;
 import com.chen.conductorbackend.service.IUserService;
 import com.chen.conductorbackend.service.IUserTaskService;
 import com.chen.conductorbackend.utils.RedisUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +40,7 @@ import java.time.Period;
  */
 @RestController
 @RequestMapping("/user")
+@Api(description = "队员有关api")
 @Slf4j
 public class UserController {
 
@@ -54,6 +61,10 @@ public class UserController {
      * @return
      */
     @GetMapping("/login")
+    @ApiOperation(value = "小程序用户登录", notes = "以微信id（手机号）为依据，判断用户的身份是队员还是普通用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "wxId", value = "微信号（直接当作手机号）", dataType = "String")
+    })
     public BaseResult login(@RequestParam("wxId") String wxId) {
         User user = userService.getOne(new QueryWrapper<User>().eq("wx_id", wxId));
         UserInfoDTO userInfo = new UserInfoDTO();
@@ -62,7 +73,7 @@ public class UserController {
             BeanUtils.copyProperties(user, userInfo);
             userInfo.setUid(user.getId());
             userInfo.setAge(Period.between(user.getBirth().toLocalDate(), LocalDate.now()).getYears());
-            token = "Bearer " + user.getId();
+            token = "" + user.getId();
             userInfo.setToken(token);
         } else {
             //新建一条用户记录返回
@@ -76,6 +87,7 @@ public class UserController {
             userInfo.setUsername("普通成员");
             //对于普通成员，token统一为1
             token = "-1";
+            userInfo.setToken(token);
         }
         //将uid当作token写入redis
         if (redisUtil.hasKey(token)) {
@@ -93,6 +105,10 @@ public class UserController {
      * @return
      */
     @GetMapping("check/{uid}")
+    @ApiOperation(value = "获取一名用户的简要信息", notes = "根据用户id获取用户的简要信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "uid", value = "用户id", dataType = "Integer")
+    })
     public BaseResult getUserInfoByUid(@PathVariable("uid") Integer uid, @RequestHeader("Authorization") String token) {
         if (!redisUtil.hasKey(token)) {
             log.warn("用户未登录");
@@ -120,13 +136,14 @@ public class UserController {
      * @return
      */
     @PostMapping("/updateLocation")
+    @ApiOperation(value = "更新队员的实时位置", notes = "更新队员的地址（经纬度）")
     public BaseResult updateLocation(@RequestBody UpdateLocationDTO updateLocationDTO, @RequestHeader("Authorization") String token) {
         if (!redisUtil.hasKey(token)) {
             log.warn("用户未登录");
             return BaseResult.failWithCodeAndMsg(1, "用户未登录");
         }
         //如果登录的是普通用户，则无权限
-        if ("Bearer -1".equals(token)) {
+        if ("-1".equals(token)) {
             log.warn("用户无权限");
             return BaseResult.failWithCodeAndMsg(1, "无权限");
         }
@@ -149,24 +166,26 @@ public class UserController {
 
     /**
      * 队员受理一条救援请求
-     * @param params
+     * @param requestHandleDTO
      * @param token
      * @return
      */
     @PostMapping("/accept")
-    public BaseResult acceptTask(@RequestBody JSONObject params, @RequestHeader("Authorization") String token) {
+    @ApiOperation(value = "队员受理一条任务", notes = "队员受理一条任务")
+    public BaseResult acceptTask(@RequestBody RequestHandleDTO requestHandleDTO,
+                                 @RequestHeader("Authorization") String token) {
         if (!redisUtil.hasKey(token)) {
             log.warn("用户未登录");
             return BaseResult.failWithCodeAndMsg(1, "用户未登录");
         }
         //如果登录的是普通用户，则无权限
-        if ("Bearer -1".equals(token)) {
+        if ("-1".equals(token)) {
             log.warn("用户无权限");
             return BaseResult.failWithCodeAndMsg(1, "无权限");
         }
 
-        Integer uid = params.getObject("uid", Integer.class);
-        Integer requestId = params.getObject("requestId", Integer.class);
+        Integer uid = requestHandleDTO.getUid();
+        Integer requestId = requestHandleDTO.getRequestId();
 
 
         //如果Uid在用户表中找不到，则受理失败
@@ -211,7 +230,14 @@ public class UserController {
         userTaskService.save(userTaskRelation);
 
         log.info("队员受理任务成功");
-        return BaseResult.success();
+
+        //返回这条受理的任务信息
+        TaskReturnDTO taskReturnDTO = new TaskReturnDTO();
+        BeanUtils.copyProperties(task, taskReturnDTO);
+        taskReturnDTO.setRequestId(task.getId());
+        taskReturnDTO.setLostAge(Period.between(task.getLostBirth().toLocalDate(), LocalDate.now()).getYears());
+        taskReturnDTO.setLostStatus(LostStatus.nameOf(task.getLostStatus()));
+        return BaseResult.successWithData(taskReturnDTO);
     }
 
 
@@ -222,20 +248,22 @@ public class UserController {
      * @return
      */
     @PostMapping("/complete")
-    public BaseResult complete(@RequestBody JSONObject params, @RequestHeader("Authorization") String token) {
+    @ApiOperation(value = "队员完成一条任务", notes = "队员完成一条任务")
+    public BaseResult complete(@RequestBody RequestHandleDTO requestHandleDTO,
+                               @RequestHeader("Authorization") String token) {
         if (!redisUtil.hasKey(token)) {
             log.warn("用户未登录");
             return BaseResult.failWithCodeAndMsg(1, "用户未登录");
         }
         //如果登录的是普通用户，则无权限
-        if ("Bearer -1".equals(token)) {
+        if ("-1".equals(token)) {
             log.warn("用户无权限");
             return BaseResult.failWithCodeAndMsg(1, "无权限");
         }
 
 
-        Integer uid = params.getObject("uid", Integer.class);
-        Integer requestId = params.getObject("requestId", Integer.class);
+        Integer uid = requestHandleDTO.getUid();
+        Integer requestId = requestHandleDTO.getRequestId();
 
         //如果Uid在用户表中找不到，则失败
         if (userService.getById(uid) == null) {
@@ -260,7 +288,15 @@ public class UserController {
             task.setLostStatus(LostStatus.FINISHED.getStatus());
             task.setGmtModified(System.currentTimeMillis());
             taskService.updateById(task);
-            return BaseResult.success();
+
+            //返回这条受理的任务信息
+            TaskReturnDTO taskReturnDTO = new TaskReturnDTO();
+            BeanUtils.copyProperties(task, taskReturnDTO);
+            taskReturnDTO.setRequestId(task.getId());
+            taskReturnDTO.setLostAge(Period.between(task.getLostBirth().toLocalDate(), LocalDate.now()).getYears());
+            taskReturnDTO.setLostStatus(LostStatus.nameOf(task.getLostStatus()));
+
+            return BaseResult.successWithData(taskReturnDTO);
         } else {
             log.info("任务完成失败");
             return BaseResult.failWithCodeAndMsg(1, "当前任务无法完成");

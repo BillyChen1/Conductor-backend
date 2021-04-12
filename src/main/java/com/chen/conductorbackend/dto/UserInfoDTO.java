@@ -5,11 +5,12 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
 @ApiModel(description = "用户基本信息")
-public class UserInfoDTO {
+public class UserInfoDTO implements Serializable {
     private Integer uid;
 
     @ApiModelProperty(name = "username", value = "队员姓名", dataType = "String")

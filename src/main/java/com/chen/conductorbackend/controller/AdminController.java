@@ -2,6 +2,7 @@ package com.chen.conductorbackend.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.chen.conductorbackend.common.BaseResult;
+import com.chen.conductorbackend.dto.AdminLoginDTO;
 import com.chen.conductorbackend.dto.TaskReturnDTO;
 import com.chen.conductorbackend.dto.UserPostDTO;
 import com.chen.conductorbackend.entity.Task;
@@ -10,6 +11,10 @@ import com.chen.conductorbackend.enums.LostStatus;
 import com.chen.conductorbackend.service.impl.TaskServiceImpl;
 import com.chen.conductorbackend.service.impl.UserServiceImpl;
 import com.chen.conductorbackend.utils.RedisUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +27,13 @@ import java.time.Period;
 import java.util.Date;
 
 @RestController
+@RequestMapping("/admin")
+@Api(description = "管理员有关api")
 @CrossOrigin
 @Slf4j
 public class AdminController {
 
-    private final String USERNAME = "Bearer admin";
+    private final String USERNAME = "admin";
     private final String PASSWORD = "admin";
     @Autowired
     private RedisUtil redisUtil;
@@ -38,13 +45,14 @@ public class AdminController {
     /**
      * 管理员登录
      *
-     * @param params 账号和密码
+     * @param adminLoginDTO 账号和密码
      * @return code: 0-->success 1-->fail   token
      */
-    @PostMapping("/admin/login")
-    public Object login(@RequestBody JSONObject params) {
-        String username = "Bearer " + params.getObject("username", String.class);
-        String password = params.getObject("password", String.class);
+    @PostMapping("/login")
+    @ApiOperation(value = "管理员登陆")
+    public Object login(@RequestBody AdminLoginDTO adminLoginDTO) {
+        String username = adminLoginDTO.getUsername();
+        String password = adminLoginDTO.getPassword();
 
         if (USERNAME.equals(username) && PASSWORD.equals(password)) {
             if (redisUtil.hasKey(username)) {
@@ -63,30 +71,6 @@ public class AdminController {
         }
     }
 
-    /**
-     * 查看一条报案信息详情
-     *
-     * @param requestId task id
-     * @param token     token
-     * @return taskReturnDTO
-     */
-    @GetMapping("/task/{requestId}")
-    public Object getTaskDetailById(@PathVariable int requestId, @RequestHeader("Authorization") String token) {
-        if (!redisUtil.hasKey(token)) {
-            log.warn("管理员未登录");
-            return BaseResult.failWithCodeAndMsg(1, "管理员未登录");
-        }
-
-        Task task = taskService.getById(requestId);
-        TaskReturnDTO taskReturnDTO = new TaskReturnDTO();
-        BeanUtils.copyProperties(task, taskReturnDTO);
-        taskReturnDTO.setRequestId(requestId);
-        taskReturnDTO.setLostAge(Period.between(task.getLostBirth().toLocalDate(), LocalDate.now()).getYears());
-        taskReturnDTO.setLostStatus(LostStatus.nameOf(task.getLostStatus()));
-
-        log.info("查看一条报案信息详情成功");
-        return BaseResult.successWithData(taskReturnDTO);
-    }
 
     /**
      * 管理员添加新队员
@@ -95,7 +79,8 @@ public class AdminController {
      * @param token    token
      * @return true or false
      */
-    @PostMapping("/admin/user/member")
+    @PostMapping("/user/member")
+    @ApiOperation(value = "管理员添加新队员")
     public Object insertAUser(@RequestBody UserPostDTO userInfo, @RequestHeader("Authorization") String token) {
         if (!redisUtil.hasKey(token)) {
             log.warn("管理员未登录");
@@ -129,7 +114,11 @@ public class AdminController {
      * @param token token
      * @return true or false
      */
-    @DeleteMapping("/admin/user/member/{uid}")
+    @DeleteMapping("/user/member/{uid}")
+    @ApiOperation(value = "管理员删除队员")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "uid", value = "删除的用户id", required = true, dataType = "Integer")
+    })
     public Object deleteUserById(@PathVariable int uid, @RequestHeader("Authorization") String token) {
         if (!redisUtil.hasKey(token)) {
             log.warn("管理员未登录");
@@ -138,8 +127,8 @@ public class AdminController {
 
         boolean flag = userService.removeById(uid);
         //还需要删除redis缓存
-        if (redisUtil.hasKey("Bearer " + uid)) {
-            redisUtil.expire("Bearer " + uid, -1);
+        if (redisUtil.hasKey(uid + "")) {
+            redisUtil.expire("" + uid, -1);
         }
         if (flag) {
             log.info("删除队员成功");
@@ -150,7 +139,11 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/admin/user/member/{uid}")
+    @PostMapping("/user/member/{uid}")
+    @ApiOperation(value = "管理员更新队员")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "uid", value = "更新的用户id", required = true, dataType = "Integer")
+    })
     public Object updateUserInfo(@PathVariable int uid, @RequestBody UserPostDTO userInfo
             , @RequestHeader("Authorization") String token) {
         if (!redisUtil.hasKey(token)) {
@@ -182,7 +175,8 @@ public class AdminController {
      * @param token
      * @return
      */
-    @GetMapping("/admin/user/member")
+    @GetMapping("/user/member")
+    @ApiOperation(value = "管理员获取所有队员信息")
     public BaseResult listAllUserInfo(@RequestHeader("Authorization") String token) {
         if (!redisUtil.hasKey(token)) {
             log.warn("管理员未登录");
