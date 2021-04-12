@@ -82,9 +82,6 @@ public class AdminController {
         BeanUtils.copyProperties(task, taskReturnDTO);
         taskReturnDTO.setRequestId(requestId);
         taskReturnDTO.setLostAge(Period.between(task.getLostBirth().toLocalDate(), LocalDate.now()).getYears());
-        taskReturnDTO.setLostGender(
-                "0".equals(taskReturnDTO.getLostGender()) ? "女" : "男"
-        );
         taskReturnDTO.setLostStatus(LostStatus.nameOf(task.getLostStatus()));
 
         log.info("查看一条报案信息详情成功");
@@ -110,7 +107,7 @@ public class AdminController {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            user.setBirth(sdf.parse(userInfo.getBirth()));
+            user.setBirth(new java.sql.Date(sdf.parse(userInfo.getBirth()).getTime()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -140,6 +137,10 @@ public class AdminController {
         }
 
         boolean flag = userService.removeById(uid);
+        //还需要删除redis缓存
+        if (redisUtil.hasKey("Bearer " + uid)) {
+            redisUtil.expire("Bearer " + uid, -1);
+        }
         if (flag) {
             log.info("删除队员成功");
             return BaseResult.success();
@@ -161,7 +162,7 @@ public class AdminController {
         BeanUtils.copyProperties(userInfo, user);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            user.setBirth(sdf.parse(userInfo.getBirth()));
+            user.setBirth(new java.sql.Date(sdf.parse(userInfo.getBirth()).getTime()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -174,6 +175,21 @@ public class AdminController {
             log.info("编辑队员信息失败");
             return BaseResult.failWithCodeAndMsg(1, "编辑队员信息失败");
         }
+    }
+
+    /**
+     * 管理员获取所有用户的信息
+     * @param token
+     * @return
+     */
+    @GetMapping("/admin/user/member")
+    public BaseResult listAllUserInfo(@RequestHeader("Authorization") String token) {
+        if (!redisUtil.hasKey(token)) {
+            log.warn("管理员未登录");
+            return BaseResult.failWithCodeAndMsg(1, "管理员未登录");
+        }
+
+        return null;
     }
 
 }
