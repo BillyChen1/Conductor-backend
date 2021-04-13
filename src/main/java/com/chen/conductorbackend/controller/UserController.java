@@ -1,7 +1,7 @@
 package com.chen.conductorbackend.controller;
 
 
-import com.alibaba.fastjson.JSONObject;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chen.conductorbackend.common.BaseResult;
 import com.chen.conductorbackend.dto.*;
@@ -10,7 +10,6 @@ import com.chen.conductorbackend.entity.User;
 import com.chen.conductorbackend.entity.UserTask;
 import com.chen.conductorbackend.enums.LostStatus;
 import com.chen.conductorbackend.enums.Role;
-import com.chen.conductorbackend.mapper.UserMapper;
 import com.chen.conductorbackend.service.ITaskService;
 import com.chen.conductorbackend.service.IUserService;
 import com.chen.conductorbackend.service.IUserTaskService;
@@ -27,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+
 
 /**
  * <p>
