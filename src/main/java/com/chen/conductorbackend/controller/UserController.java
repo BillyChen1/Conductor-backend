@@ -38,6 +38,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/user")
+@CrossOrigin
 @Api(description = "队员有关api")
 @Slf4j
 public class UserController {

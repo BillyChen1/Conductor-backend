@@ -35,6 +35,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/task")
 @Slf4j
+@CrossOrigin
 @Api(description = "任务有关api")
 public class TaskController {
 
