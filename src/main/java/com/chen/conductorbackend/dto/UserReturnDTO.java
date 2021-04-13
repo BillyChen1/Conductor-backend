@@ -37,7 +37,7 @@ public class UserReturnDTO implements Serializable {
     @ApiModelProperty(name = "latitude", value = "队员目前所在纬度", dataType = "Double")
     private Double latitude;
 
-    @ApiModelProperty(name = "cases", value = "队员接手的，正在进行的案件", dataType = "List")
-    private List<Task> cases;
+    @ApiModelProperty(name = "cases", value = "队员接手的案件", dataType = "List")
+    private List<TaskReturnDTO> cases;
 
 }

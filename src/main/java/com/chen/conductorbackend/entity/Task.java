@@ -62,7 +62,7 @@ public class Task implements Serializable {
 
     private Long gmtModified;
 
-    @ApiModelProperty(value = "走失者年龄")
+    @ApiModelProperty(value = "走失者出生年月日")
     private Date lostBirth;
 
 

@@ -26,4 +26,12 @@ public interface TaskMapper extends BaseMapper<Task> {
      */
     List<Task> listTasksByUidAndStatus(@Param("uid") Integer uid, @Param("status") Integer status);
 
+
+    /**
+     * 根据用户Id获得其接手的任务列表
+     * @param uid
+     * @return
+     */
+    List<Task> listTasksByUid(@Param("uid") Integer uid);
+
 }

@@ -2,6 +2,8 @@ package com.chen.conductorbackend.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.time.LocalDate;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 
@@ -11,6 +13,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.sql.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -61,5 +64,7 @@ public class User implements Serializable {
     @ApiModelProperty(value = "角色 0为队员 1为普通成员")
     private Integer role;
 
-
+    @ApiModelProperty(value = "队员接受的任务列表")
+    @TableField(exist = false)
+    private List<Task> tasks;
 }

@@ -21,7 +21,7 @@
 
     <select id="listTasksByUidAndStatus" resultMap="TaskMap">
       select task.id, lost_name, lost_gender, lost_phone, lost_address, photo, longitude, latitude,
-      detail, lost_status, task.gmt_create, lost_birth, rescue_num
+      detail, lost_status, task.gmt_create, task.gmt_modified, lost_birth, rescue_num
       <if test="uid == null and status != null">
           from task
           where lost_status = #{status}
@@ -38,5 +38,13 @@
           from task
       </if>
       order by gmt_create desc
+    </select>
+
+    <select id="listTasksByUid" resultMap="TaskMap">
+        select task.id, lost_name, lost_gender, lost_phone, lost_address, photo, longitude, latitude,
+        detail, lost_status, task.gmt_create, task.gmt_modified, lost_birth, rescue_num
+        from task, user_task
+        where task.id = user_task.rid and user_task.uid = #{uid}
+        order by gmt_create desc
     </select>
 </mapper>

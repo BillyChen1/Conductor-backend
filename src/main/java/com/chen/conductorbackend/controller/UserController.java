@@ -4,10 +4,7 @@ package com.chen.conductorbackend.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chen.conductorbackend.common.BaseResult;
-import com.chen.conductorbackend.dto.RequestHandleDTO;
-import com.chen.conductorbackend.dto.TaskReturnDTO;
-import com.chen.conductorbackend.dto.UpdateLocationDTO;
-import com.chen.conductorbackend.dto.UserInfoDTO;
+import com.chen.conductorbackend.dto.*;
 import com.chen.conductorbackend.entity.Task;
 import com.chen.conductorbackend.entity.User;
 import com.chen.conductorbackend.entity.UserTask;
@@ -29,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 
 /**
  * <p>
@@ -57,16 +55,16 @@ public class UserController {
     private ITaskService taskService;
     /**
      * 用户登录
-     * @param wxId
+     * @param phone
      * @return
      */
     @GetMapping("/login")
-    @ApiOperation(value = "小程序用户登录", notes = "以微信id（手机号）为依据，判断用户的身份是队员还是普通用户")
+    @ApiOperation(value = "小程序用户登录", notes = "以手机号为依据，判断用户的身份是队员还是普通用户")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "wxId", value = "微信号（直接当作手机号）", dataType = "String")
+            @ApiImplicitParam(name = "phone", value = "微信号（直接当作手机号）", dataType = "String")
     })
-    public BaseResult login(@RequestParam("wxId") String wxId) {
-        User user = userService.getOne(new QueryWrapper<User>().eq("wx_id", wxId));
+    public BaseResult login(@RequestParam("phone") String phone) {
+        User user = userService.getOne(new QueryWrapper<User>().eq("phone", phone));
         UserInfoDTO userInfo = new UserInfoDTO();
         String token = null;
         if (user != null) {
@@ -243,7 +241,7 @@ public class UserController {
 
     /**
      * 队员完成一项任务
-     * @param params
+     * @param requestHandleDTO
      * @param token
      * @return
      */
@@ -301,6 +299,37 @@ public class UserController {
             log.info("任务完成失败");
             return BaseResult.failWithCodeAndMsg(1, "当前任务无法完成");
         }
+    }
+
+    /**
+     * 获得和uid编号队员的队友列表（接手相同任务且任务的状态为进行中，那么这两个人就是队友）
+     * @param uid
+     * @param token
+     * @return
+     */
+    @GetMapping("/partner/{uid}")
+    @ApiOperation(value = "寻找队友", notes = "获得和uid编号队员的队友列表（接手相同任务且任务的状态为进行中，那么这两个人就是队友）")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "uid", value = "用户id", dataType = "Integer")
+    })
+    public BaseResult getPartners(@PathVariable("uid") Integer uid,
+                                  @RequestHeader("Authorization") String token) {
+        if (!redisUtil.hasKey(token)) {
+            log.warn("用户未登录");
+            return BaseResult.failWithCodeAndMsg(1, "用户未登录");
+        }
+        //如果登录的是普通用户，则无权限
+        if ("-1".equals(token)) {
+            log.warn("用户无权限");
+            return BaseResult.failWithCodeAndMsg(1, "无权限");
+        }
+
+
+        List<UserReturnDTO> userList = userService.listPartnersByUid(uid);
+
+        return BaseResult.successWithData(userList);
+
+
     }
 }
 

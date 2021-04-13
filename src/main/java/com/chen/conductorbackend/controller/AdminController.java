@@ -5,6 +5,7 @@ import com.chen.conductorbackend.common.BaseResult;
 import com.chen.conductorbackend.dto.AdminLoginDTO;
 import com.chen.conductorbackend.dto.TaskReturnDTO;
 import com.chen.conductorbackend.dto.UserPostDTO;
+import com.chen.conductorbackend.dto.UserReturnDTO;
 import com.chen.conductorbackend.entity.Task;
 import com.chen.conductorbackend.entity.User;
 import com.chen.conductorbackend.enums.LostStatus;
@@ -25,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
@@ -171,7 +173,7 @@ public class AdminController {
     }
 
     /**
-     * 管理员获取所有用户的信息
+     * 管理员获取所有用户的信息，其中每个用户还包含其接手且正在进行的任务列表
      * @param token
      * @return
      */
@@ -183,7 +185,9 @@ public class AdminController {
             return BaseResult.failWithCodeAndMsg(1, "管理员未登录");
         }
 
-        return null;
+        List<UserReturnDTO> userList = userService.listAllUserInfo();
+
+        return BaseResult.successWithData(userList);
     }
 
 }
