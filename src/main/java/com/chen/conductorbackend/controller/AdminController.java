@@ -119,7 +119,7 @@ public class AdminController {
     @DeleteMapping("/user/member/{uid}")
     @ApiOperation(value = "管理员删除队员")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "uid", value = "删除的用户id", required = true, dataType = "Integer")
+            @ApiImplicitParam(name = "uid", value = "删除的用户id", dataType = "Integer")
     })
     public Object deleteUserById(@PathVariable int uid, @RequestHeader("Authorization") String token) {
         if (!redisUtil.hasKey(token)) {
@@ -144,7 +144,7 @@ public class AdminController {
     @PostMapping("/user/member/{uid}")
     @ApiOperation(value = "管理员更新队员")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "uid", value = "更新的用户id", required = true, dataType = "Integer")
+            @ApiImplicitParam(name = "uid", value = "更新的用户id", dataType = "Integer")
     })
     public Object updateUserInfo(@PathVariable int uid, @RequestBody UserPostDTO userInfo
             , @RequestHeader("Authorization") String token) {
@@ -157,7 +157,10 @@ public class AdminController {
         BeanUtils.copyProperties(userInfo, user);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            user.setBirth(new java.sql.Date(sdf.parse(userInfo.getBirth()).getTime()));
+            //前端传过来的birth不为空的情况下，才使用前端的birth数据
+            if (userInfo.getBirth() != null) {
+                user.setBirth(new java.sql.Date(sdf.parse(userInfo.getBirth()).getTime()));
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
