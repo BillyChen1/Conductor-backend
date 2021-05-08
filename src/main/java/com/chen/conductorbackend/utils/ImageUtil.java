@@ -32,11 +32,6 @@ public class ImageUtil {
     @Value("${aliyun.accessKeySecret}")
     private String accessKeySecret;
 
-    @Value("${aliyun.face.accessKeyId}")
-    private String faceAccessKeyId;
-
-    @Value("${aliyun.face.accessKeySecret}")
-    private String faceAccessKeySecret;
 
     @Value("${aliyun.bucketName}")
     private String bucketName;
@@ -81,9 +76,9 @@ public class ImageUtil {
     public CompareFaceResponseBody.CompareFaceResponseBodyData getImageCompareResult(String urlA, String urlB) throws Exception {
         Config config = new Config()
                 // 您的AccessKey ID
-                .setAccessKeyId(faceAccessKeyId)
+                .setAccessKeyId(accessKeyId)
                 // 您的AccessKey Secret
-                .setAccessKeySecret(faceAccessKeySecret);
+                .setAccessKeySecret(accessKeySecret);
         // 访问的域名
         config.endpoint = facebodyEndpoint;
         Client facebodyClient = new Client(config);

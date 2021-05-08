@@ -89,7 +89,10 @@ public class ImageController {
             taskReturnDTO.setRequestId(resultTask.getId());
             taskReturnDTO.setLostAge(Period.between(resultTask.getLostBirth().toLocalDate(), LocalDate.now()).getYears());
             taskReturnDTO.setLostStatus(LostStatus.nameOf(resultTask.getLostStatus()));
-            return BaseResult.successWithData(taskReturnDTO);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("task", taskReturnDTO);
+            jsonObject.put("confidence", curr);
+            return BaseResult.successWithData(jsonObject);
         }
     }
 }
