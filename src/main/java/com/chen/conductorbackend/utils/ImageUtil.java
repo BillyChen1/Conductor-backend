@@ -1,16 +1,24 @@
 package com.chen.conductorbackend.utils;
 
+import com.aliyun.facebody20191230.Client;
+import com.aliyun.facebody20191230.models.CompareFaceRequest;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import com.aliyun.tea.*;
+import com.aliyun.facebody20191230.*;
+import com.aliyun.facebody20191230.models.*;
+import com.aliyun.teaopenapi.*;
+import com.aliyun.teaopenapi.models.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class ImageUtil {
@@ -24,8 +32,17 @@ public class ImageUtil {
     @Value("${aliyun.accessKeySecret}")
     private String accessKeySecret;
 
+    @Value("${aliyun.face.accessKeyId}")
+    private String faceAccessKeyId;
+
+    @Value("${aliyun.face.accessKeySecret}")
+    private String faceAccessKeySecret;
+
     @Value("${aliyun.bucketName}")
     private String bucketName;
+
+    @Value("${aliyun.facebodyEndpoint}")
+    private String facebodyEndpoint;
 
     public String uploadImage(InputStream inputStream, String fileName) {
 
@@ -59,5 +76,23 @@ public class ImageUtil {
         ossClient.shutdown();
 
         return url.toString();
+    }
+
+    public CompareFaceResponseBody.CompareFaceResponseBodyData getImageCompareResult(String urlA, String urlB) throws Exception {
+        Config config = new Config()
+                // 您的AccessKey ID
+                .setAccessKeyId(faceAccessKeyId)
+                // 您的AccessKey Secret
+                .setAccessKeySecret(faceAccessKeySecret);
+        // 访问的域名
+        config.endpoint = facebodyEndpoint;
+        Client facebodyClient = new Client(config);
+        CompareFaceRequest compareFaceRequest = new CompareFaceRequest()
+                .setImageURLA(urlA)
+                .setImageURLB(urlB);
+        // 复制代码运行请自行打印 API 的返回值
+//        CompareFaceResponseBody.CompareFaceResponseBodyData data = facebodyClient.compareFace(compareFaceRequest).getBody().getData();
+        return facebodyClient.compareFace(compareFaceRequest).getBody().getData();
+
     }
 }

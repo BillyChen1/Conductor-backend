@@ -955,7 +955,7 @@
 
 ##### 简要描述
 
-- 根据某张照片的url，将队员拍的照片和系统中的照片进行比对，返回最相似的照片url。如果相似度低于某阈值，将出现警告信息。
+- 根据某张照片的url，将队员拍的照片和系统中的照片进行比对，返回最相似老人所对应的任务。如果相似度低于某阈值，将出现警告信息。
 
 ##### 请求URL
 
@@ -974,19 +974,26 @@
 ##### 返回示例 
 
 ``` 
- {
+  {
   	"code": 0
     "msg": "ok",
-    "data" :{
-    	"url":"http://xxxxx"
-    }
+    "data": {
+		"requestId":1,
+		"lostName":"张三",
+		"lostAge":70,
+		"lostGender":"男",
+		"photo":"https://xxxxx",
+		"latitude":31.22,
+		"longitude": 113.00,
+		"lostAddress": "湖北省武汉市青山区翠园社区xxxx",
+		"lostPhone": "13000000002",
+		"detail":"走失时穿着白色上衣，长发",
+		"lostStatus":"进行中",
+		"rescueNum":0,
+		"gmtCreate":1615462781
+	}
   }
 ```
-
-| 参数名 | 类型   | 说明                                  |
-| :----- | :----- | ------------------------------------- |
-| msg    | string | 提示消息，ok或fail                    |
-| url    | string | 比对得到的最相似的图片的url，可以为空 |
 
 ## **19. 管理员登录 Finish
 
@@ -997,13 +1004,24 @@
 **请求方式**
 
 + POST
+##### 返回参数说明
 
-**参数**
+| 参数名      | 类型   | 说明                                                         |
+| :---------- | :----- | ------------------------------------------------------------ |
+| requestId   | number | 救援请求id                                                   |
+| lostName    | string | 走失者姓名                                                   |
+| lostAge     | number | 走失者年龄                                                   |
+| lostGender  | string | 走失者性别                                                   |
+| photo       | string | 走失者的图片url                                              |
+| latitude    | number | 走失地点的纬度                                               |
+| longitude   | number | 走失地点的经度                                               |
+| lostAddress | string | 走失者的家庭住址                                             |
+| lostPhone   | string | 家属的联系方式                                               |
+| detail      | string | 补充信息                                                     |
+| lostStatus  | string | 救援请求状态（0表示未受理，1表示进行中，2表示已完成，3表示已超时） |
+| rescueNum   | number | 该案件接手的人数                                             |
+| gmtCreate   | number | 案件的创建时间戳                                             |
 
-| 参数名   | 必选 | 类型   | 说明   |
-| -------- | ---- | ------ | ------ |
-| username | 是   | string | 用户名 |
-| password | 是   | string | 密码   |
 
 **返回示例**
 
