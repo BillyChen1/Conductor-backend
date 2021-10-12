@@ -3,9 +3,10 @@ package com.chen.conductorbackend;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @SpringBootApplication
-//@MapperScan("com.chen.conductorbackend.mapper")
+@CrossOrigin
 public class ConductorbackendApplication {
 
     public static void main(String[] args) {

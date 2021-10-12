@@ -9,12 +9,9 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-@ApiModel(description = "查询用户返回的结果")
-public class UserReturnDTO implements Serializable {
+@ApiModel(description = "用户基本信息")
+public class UserInfoDTO implements Serializable {
     private Integer uid;
-
-    @ApiModelProperty(name = "wxId", value = "队员微信号", dataType = "String")
-    private String wxId;
 
     @ApiModelProperty(name = "username", value = "队员姓名", dataType = "String")
     private String username;
@@ -31,13 +28,9 @@ public class UserReturnDTO implements Serializable {
     @ApiModelProperty(name = "address", value = "队员的家庭住址", dataType = "String")
     private String address;
 
-    @ApiModelProperty(name = "longitude", value = "队员目前所在经度", dataType = "Double")
-    private Double longitude;
+    @ApiModelProperty(name = "role", value = "用户角色", dataType = "Integer")
+    private Integer role;
 
-    @ApiModelProperty(name = "latitude", value = "队员目前所在纬度", dataType = "Double")
-    private Double latitude;
-
-    @ApiModelProperty(name = "cases", value = "队员接手的案件", dataType = "List")
-    private List<TaskReturnDTO> cases;
-
+    @ApiModelProperty(name = "token", value = "token", dataType = "String")
+    private String token;
 }

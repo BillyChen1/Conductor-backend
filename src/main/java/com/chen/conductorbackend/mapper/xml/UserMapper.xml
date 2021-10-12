@@ -2,4 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chen.conductorbackend.mapper.UserMapper">
 
+    <resultMap id="userMap" type="com.chen.conductorbackend.entity.User">
+        <id column="id" property="id"></id>
+        <result column="username" property="username"></result>
+        <result column="gender" property="gender"></result>
+        <result column="birth" property="birth"></result>
+        <result column="address" property="address"></result>
+        <result column="phone" property="phone"></result>
+        <result column="wx_id" property="wxId"></result>
+        <result column="longitude" property="longitude"></result>
+        <result column="latitude" property="latitude"></result>
+        <result column="gmt_create" property="gmtCreate"></result>
+        <result column="gmt_modified" property="gmtModified"></result>
+        <result column="role" property="role"></result>
+        <collection property="tasks" ofType="com.chen.conductorbackend.entity.Task" column="id" select="com.chen.conductorbackend.mapper.TaskMapper.listTasksByUid"></collection>
+    </resultMap>
+
+    <select id="listAllUserInfo" resultMap="userMap">
+      select * from user
+    </select>
+
+    <select id="listPartnersByUid" resultMap="userMap">
+      select ut2.uid as id, username, gender, birth, address, phone, wx_id, longitude, latitude,
+            user.gmt_create, user.gmt_modified, role
+      from user_task as ut1, user_task as ut2, user
+      where ut1.rid = ut2.rid and user.id = ut2.uid and ut1.uid = #{uid} and ut2.uid != ut1.uid
+      group by id
+    </select>
 </mapper>

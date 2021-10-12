@@ -7,8 +7,7 @@
 
 - 注意： 标有星号的接口可能会在后台管理系统中用到
 
-## 1. 用户登录
-
+## 1. 用户登录 Finish
 ##### 简要描述
 
 - 校验当前队员是否在已注册的队员当中。在服务端的数据库中保存了已经注册的队员信息。队员登录时，会校验当前用户的微信号是否已经在后台管理系统中注册
@@ -25,7 +24,7 @@
 
 | 参数名 | 必选 | 类型   | 说明             |
 | :----- | :--- | :----- | ---------------- |
-| wxId   | 是   | string | 当前队员的微信号 |
+| phone  | 是   | string | 当前队员的微信号 |
 
 ##### 返回示例 
 
@@ -63,11 +62,8 @@
 
 - 后台根据微信号查用户表，如果是队员，则登陆成功，返回的对象中role为0
 - 如果是普通用户，则返回的对象中role为1
-- 如果是在用户表中查不到，则登录失败。
-
-
-
-## 2. 获取一名用户的基本信息
+- 如果是在用户表中查不到，则新建一条临时的用户记录返回
+## 2. 获取一名用户的基本信息 Finish
 
 ##### 简要描述
 
@@ -118,7 +114,7 @@
 - 如果队员不在已注册列表中，则说明角色为普通用户。
 
 
-## 3. 更新一个队员的地理位置
+## 3. 更新一个队员的地理位置 Finish
 
 ##### 简要描述
 
@@ -153,7 +149,7 @@
 ```
 
 
-## 4. 家属报案（发出一条救援请求）
+## 4. 家属报案（发出一条救援请求）Finish
 
 ##### 简要描述
 
@@ -231,7 +227,7 @@
   }
 ```
 
-## **6. 查看一条报案信息详情（救援请求）
+## **6. 查看一条报案信息详情（救援请求） Finish
 
 ##### 简要描述
 
@@ -263,7 +259,7 @@
 		"lostAddress": "湖北省武汉市青山区翠园社区xxxx",
 		"lostPhone": "13000000002",
 		"detail":"走失时穿着白色上衣，长发",
-		"status":"未受理",
+		"lostStatus":"未受理",
 		"rescueNum":5,
 		"gmtCreate":1615462781
     }
@@ -286,7 +282,7 @@
 | lostAddress | string | 走失者的家庭住址                                             |
 | lostPhone   | string | 家属的联系方式                                               |
 | detail      | string | 补充信息                                                     |
-| status      | string | 救援请求状态（0表示未受理，1表示进行中，2表示已完成，3表示已超时） |
+| lostStatus  | string | 救援请求状态（0表示未受理，1表示进行中，2表示已完成，3表示已超时） |
 | rescueNum   | number | 该案件接手的人数                                             |
 | gmtCreate   | number | 案件的创建时间戳                                             |
 
@@ -294,7 +290,7 @@
 
 
 
-## **7. 根据一定条件查看多条报案信息（救援请求）
+## **7. 根据一定条件查看多条报案信息（救援请求）Finish
 
 ##### 简要描述
 
@@ -333,7 +329,7 @@
 			"lostAddress": "湖北省武汉市青山区翠园社区xxxx",
 			"lostPhone": "13000000002",
 			"detail":"走失时穿着白色上衣，长发",
-			"status":"进行中",
+			"lostStatus":"进行中",
 			"rescueNum":5,
 			"gmtCreate":1615462781
 		},
@@ -348,7 +344,7 @@
 			"lostAddress": "湖北省武汉市青山区翠园社区xxxx",
 			"lostPhone": "13000000002",
 			"detail":"走失时穿着白色上衣，长发",
-			"status":"进行中",
+			"lostStatus":"进行中",
 			"gmtCreate":1615462781
 		}
     ]
@@ -369,7 +365,7 @@
 | lostAddress | string | 走失者的家庭住址                                             |
 | lostPhone   | string | 家属的联系方式                                               |
 | detail      | string | 补充信息                                                     |
-| status      | string | 救援请求状态（0表示未受理，1表示进行中，2表示已完成，3表示已超时） |
+| lostStatus  | string | 救援请求状态（0表示未受理，1表示进行中，2表示已完成，3表示已超时） |
 | rescueNum   | number | 该案件接手的人数                                             |
 | gmtCreate   | number | 案件的创建时间戳                                             |
 
@@ -381,7 +377,7 @@
 - 后台管理系统绘制报案状态统计的饼状图
 - 后台管理系统统计走失者年龄分布和区域分布
 
-## 8. 队员查看系统中目前存在的救援请求
+## 8. 队员查看系统中目前存在的救援请求 Finish
 
 ##### 简要描述
 
@@ -414,7 +410,7 @@
 			"lostAddress": "湖北省武汉市青山区翠园社区xxxx",
 			"lostPhone": "13000000002",
 			"detail":"走失时穿着白色上衣，长发",
-			"status":"未受理",
+			"lostStatus":"未受理",
 			"rescueNum":0,
 			"gmtCreate":1615462781
 		},
@@ -429,7 +425,7 @@
 			"lostAddress": "湖北省武汉市青山区翠园社区xxxx",
 			"lostPhone": "13000000002",
 			"detail":"走失时穿着白色上衣，长发",
-			"status":"进行中",
+			"lostStatus":"进行中",
 			"rescueNum":5,
 			"gmtCreate":1615462781
 		}
@@ -451,7 +447,7 @@
 | lostAddress | string | 走失者的家庭住址                                             |
 | lostPhone   | string | 家属的联系方式                                               |
 | detail      | string | 补充信息                                                     |
-| status      | string | 救援请求状态（0表示未受理，1表示进行中，2表示已完成，3表示已超时） |
+| lostStatus  | string | 救援请求状态（0表示未受理，1表示进行中，2表示已完成，3表示已超时） |
 | rescueNum   | number | 该案件接手的人数                                             |
 | gmtCreate   | number | 案件的创建时间戳                                             |
 
@@ -488,7 +484,7 @@
 			"lostAddress": "湖北省武汉市青山区翠园社区xxxx",
 			"lostPhone": "13000000002",
 			"detail":"走失时穿着白色上衣，长发",
-			"status":"未受理",
+			"lostStatus":"未受理",
 			"rescueNum":0,
 			"gmtCreate":1615462781
 		},
@@ -503,7 +499,7 @@
 			"lostAddress": "湖北省武汉市青山区翠园社区xxxx",
 			"lostPhone": "13000000002",
 			"detail":"走失时穿着白色上衣，长发",
-			"status":"进行中",
+			"lostStatus":"进行中",
 			"rescueNum":0,
 			"gmtCreate":1615462781
 		}
@@ -525,7 +521,7 @@
 | lostAddress | string | 走失者的家庭住址                                             |
 | lostPhone   | string | 家属的联系方式                                               |
 | detail      | string | 补充信息                                                     |
-| status      | string | 救援请求状态（0表示未受理，1表示进行中，2表示已完成，3表示已超时） |
+| lostStatus  | string | 救援请求状态（0表示未受理，1表示进行中，2表示已完成，3表示已超时） |
 | rescueNum   | number | 该案件接手的人数                                             |
 | gmtCreate   | number | 案件的创建时间戳                                             |
 
@@ -534,7 +530,7 @@
 
 - 该接口原本功能为查看家属查看自己发布的救援请求。在这里直接简化为查看所有“未受理/进行中/已超时”状态的报案信息。后期在实际应用场景中该接口需要修改。
 
-## 10. 队员受理一条报案信息
+## 10. 队员受理一条报案信息 Finish
 
 ##### 简要描述
 
@@ -552,8 +548,8 @@
 
 | 参数名    | 必选 | 类型   | 说明               |
 | :-------- | :--- | :----- | ------------------ |
-| uid       | 是   | string | 当前队员id         |
-| requestId | 是   | string | 受理的救援请求的id |
+| uid       | 是   | number | 当前队员id         |
+| requestId | 是   | number | 受理的救援请求的id |
 
 
 
@@ -574,7 +570,7 @@
 		"lostAddress": "湖北省武汉市青山区翠园社区xxxx",
 		"lostPhone": "13000000002",
 		"detail":"走失时穿着白色上衣，长发",
-		"status":"进行中",
+		"lostStatus":"进行中",
 		"rescueNum":0,
 		"gmtCreate":1615462781
 	}
@@ -586,7 +582,7 @@
 - 返回该条报案信息
 
 
-## 11. 队员完成一条报案信息的任务
+## 11. 队员完成一条报案信息的任务 Finish
 
 ##### 简要描述
 
@@ -626,7 +622,7 @@
 		"lostAddress": "湖北省武汉市青山区翠园社区xxxx",
 		"lostPhone": "13000000002",
 		"detail":"走失时穿着白色上衣，长发",
-		"status":"已完成",
+		"lostStatus":"已完成",
 		"rescueNum":0,
 		"gmtCreate":1615462781
 	}
@@ -639,11 +635,11 @@
 - 返回该条报案信息
 
 
-## 12. 获取和自己接手相同案件的队友
+## 12. 获取和自己接手相同案件的队友 Finish
 
 ##### 简要描述
 
-- 根据队员的id，获取和该队员接手相同案件的队友列表。案件的状态必须是进行中。
+- 根据队员的id，获取和该队员接手相同案件的队友列表。
 
 ##### 请求URL
 
@@ -683,7 +679,7 @@
 					"lostAddress": "湖北省武汉市青山区翠园社区xxxx",
 					"lostPhone": "13000000002",
 					"detail":"走失时穿着白色上衣，长发",
-					"status":"进行中",
+					"lostStatus":"进行中",
 					"rescueNum":0,
 					"gmtCreate":1615462781
 				}
@@ -723,7 +719,7 @@
 | lostAddress | string | 走失者的家庭住址                                             |
 | lostPhone   | string | 家属的联系方式                                               |
 | detail      | string | 补充信息                                                     |
-| status      | string | 救援请求状态（0表示未受理，1表示进行中，2表示已完成，3表示已超时） |
+| lostStatus  | string | 救援请求状态（0表示未受理，1表示进行中，2表示已完成，3表示已超时） |
 | rescueNum   | number | 该案件接手的人数                                             |
 | gmtCreate   | number | 案件的创建时间戳                                             |
 
@@ -732,7 +728,7 @@
 - 返回数据的data是一个存放队员对象的列表，而队员对象中的cases属性也是一个列表，它存放了该队员接手的进行中的案件
 
 
-## **13. 管理员添加新队员
+## **13. 管理员添加新队员 Finish
 
 ##### 简要描述
 
@@ -769,7 +765,7 @@
 ```
 
 
-## **14. 管理员删除队员
+## **14. 管理员删除队员 Finish
 
 ##### 简要描述
 
@@ -795,7 +791,7 @@
 
 
 
-## **15. 管理员编辑队员信息
+## **15. 管理员编辑队员信息 Finish
 
 ##### 简要描述
 
@@ -832,11 +828,11 @@
 ```
 
 
-## **16. 管理员获取所有队员的信息
+## **16. 管理员获取所有队员的信息 Finish
 
 ##### 简要描述
 
-- 返回所有队员信息的列表。其中队员对象的cases属性包含该队员接手的进行中的案件。
+- 返回所有队员信息的列表。其中队员对象的cases属性包含该队员接手的案件。
 
 ##### 请求URL
 
@@ -846,7 +842,7 @@
 
 - GET
 
-##### 返回示例 
+##### 返回示例
 
 ``` 
   {
@@ -876,7 +872,7 @@
 					"lostAddress": "湖北省武汉市青山区翠园社区xxxx",
 					"lostPhone": "13000000002",
 					"detail":"走失时穿着白色上衣，长发",
-					"status":"进行中",
+					"lostStatus":"进行中",
 					"rescueNum":0,
 					"gmtCreate":1615462781
 				}
@@ -916,11 +912,11 @@
 | lostAddress | string | 走失者的家庭住址                                             |
 | lostPhone   | string | 家属的联系方式                                               |
 | detail      | string | 补充信息                                                     |
-| status      | string | 救援请求状态（0表示未受理，1表示进行中，2表示已完成，3表示已超时） |
+| lostStatus  | string | 救援请求状态（0表示未受理，1表示进行中，2表示已完成，3表示已超时） |
 | rescueNum   | number | 该案件接手的人数                                             |
 | gmtCreate   | number | 案件的创建时间戳                                             |
 
-## 17. 上传图片文件的接口
+## 17. 上传图片文件的接口 Finish
 
 ##### 简要描述
 
@@ -955,7 +951,7 @@
 
 ##### 简要描述
 
-- 根据某张照片的url，将队员拍的照片和系统中的照片进行比对，返回最相似的照片url。如果相似度低于某阈值，将出现警告信息。
+- 根据某张照片的url，将队员拍的照片和系统中的照片进行比对，返回最相似老人所对应的任务。如果相似度低于某阈值，将出现警告信息。
 
 ##### 请求URL
 
@@ -974,22 +970,31 @@
 ##### 返回示例 
 
 ``` 
- {
-  	"code": 0
-    "msg": "ok",
-    "data" :{
-    	"url":"http://xxxxx"
-    }
+{
+  "code": 0,
+  "msg": "成功",
+  "data": {
+    "task": {
+      "requestId": 30,
+      "lostName": "王一",
+      "lostGender": "男",
+      "lostPhone": "12222222222",
+      "lostAddress": "湖北武汉",
+      "photo": "https://condcutor-cqm-shanghai.oss-cn-shanghai.aliyuncs.com/1c2e8f9861a44de1a3593b4604f42e2e1.png?Expires=1621946516&OSSAccessKeyId=LTAI5tKgzzupwH6M2WV1pU5f&Signature=dZU7sphwbk1jr3LInZpCez33X2Q%3D",
+      "longitude": 115.34253,
+      "latitude": 31.49984,
+      "detail": "黑色帽子",
+      "lostStatus": "进行中",
+      "rescueNum": 1,
+      "gmtCreate": 1620462450395,
+      "lostAge": 62
+    },
+    "confidence": 100
   }
+}
 ```
 
-| 参数名 | 类型   | 说明                                  |
-| :----- | :----- | ------------------------------------- |
-| msg    | string | 提示消息，ok或fail                    |
-| url    | string | 比对得到的最相似的图片的url，可以为空 |
-
-## **19. 管理员登录
-
+## **19. 管理员登录 Finish
 **请求URL**
 
 + `` http://xx.com/admin/login ``
@@ -998,12 +1003,23 @@
 
 + POST
 
-**参数**
+**返回参数说明**
 
-| 参数名   | 必选 | 类型   | 说明   |
-| -------- | ---- | ------ | ------ |
-| username | 是   | string | 用户名 |
-| password | 是   | string | 密码   |
+| 参数名      | 类型   | 说明                                                         |
+| :---------- | :----- | ------------------------------------------------------------ |
+| requestId   | number | 救援请求id                                                   |
+| lostName    | string | 走失者姓名                                                   |
+| lostAge     | number | 走失者年龄                                                   |
+| lostGender  | string | 走失者性别                                                   |
+| photo       | string | 走失者的图片url                                              |
+| latitude    | number | 走失地点的纬度                                               |
+| longitude   | number | 走失地点的经度                                               |
+| lostAddress | string | 走失者的家庭住址                                             |
+| lostPhone   | string | 家属的联系方式                                               |
+| detail      | string | 补充信息                                                     |
+| lostStatus  | string | 救援请求状态（0表示未受理，1表示进行中，2表示已完成，3表示已超时） |
+| rescueNum   | number | 该案件接手的人数                                             |
+| gmtCreate   | number | 案件的创建时间戳                                             |
 
 **返回示例**
 
