@@ -1,5 +1,6 @@
 package com.chen.conductorbackend.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chen.conductorbackend.dto.TaskReturnDTO;
 import com.chen.conductorbackend.dto.UserReturnDTO;
 import com.chen.conductorbackend.entity.Task;
@@ -33,7 +34,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public List<UserReturnDTO> listAllUserInfo() {
-        List<User> users = userMapper.listAllUserInfo();
+
+        //List<User> users = userMapper.listAllUserInfo();
+        List<User> users = userMapper.selectList(new QueryWrapper<>());
 
         List<UserReturnDTO> userDTOList = new ArrayList<>(users.size());
         //将List<User>转化为List<UserReturnDTO>
@@ -50,6 +53,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         usersToUserDTOS(users, userDTOList);
 
         return userDTOList;
+    }
+
+    @Override
+    public User getByPhone(String phone) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("phone",phone);
+        return userMapper.selectOne(queryWrapper);
     }
 
 

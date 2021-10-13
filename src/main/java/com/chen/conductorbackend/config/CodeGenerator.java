@@ -23,10 +23,15 @@ public class CodeGenerator {
 
         //数据源配置
         DataSourceConfig dataSourceConfig = new DataSourceConfig();
-        dataSourceConfig.setUrl("jdbc:mysql://39.97.109.12:3306/conductor?serverTimezone=GMT%2B8&useUnicode=true&useSSL=false&characterEncoding=utf8");
+//        dataSourceConfig.setUrl("jdbc:mysql://39.97.109.12:3306/conductor?serverTimezone=GMT%2B8&useUnicode=true&useSSL=false&characterEncoding=utf8");
+//        dataSourceConfig.setDriverName("com.mysql.cj.jdbc.Driver");
+//        dataSourceConfig.setUsername("root");
+//        dataSourceConfig.setPassword("C322103");
+        dataSourceConfig.setUrl("jdbc:mysql://47.106.170.165:3306/conductor?serverTimezone=GMT%2B8&useUnicode=true" +
+            "&useSSL=false&characterEncoding=utf8");
         dataSourceConfig.setDriverName("com.mysql.cj.jdbc.Driver");
         dataSourceConfig.setUsername("root");
-        dataSourceConfig.setPassword("C322103");
+        dataSourceConfig.setPassword("990225");
 
         autoGenerator.setDataSource(dataSourceConfig);
 
@@ -43,7 +48,7 @@ public class CodeGenerator {
 
         //策略配置
         StrategyConfig strategy = new StrategyConfig();
-        strategy.setInclude("user", "task", "user_task");//对那一张表生成代码
+        strategy.setInclude("user", "task", "user_task","admin");//对那一张表生成代码
         strategy.setNaming(NamingStrategy.underline_to_camel);//数据库表映射到实体的命名策略
 
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);//数据库表字段映射到实体的命名策略

@@ -48,6 +48,12 @@ public class User implements Serializable {
     @ApiModelProperty(value = "队员手机号码")
     private String phone;
 
+    @ApiModelProperty(value = "队员登录密码")
+    private String password;
+
+    @ApiModelProperty(value = "盐")
+    private String salt;
+
     @ApiModelProperty(value = "队员微信号")
     private String wxId;
 

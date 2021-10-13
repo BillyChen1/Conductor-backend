@@ -27,4 +27,11 @@ public interface IUserService extends IService<User> {
      * @return
      */
     List<UserReturnDTO> listPartnersByUid(Integer uid);
+
+    /**
+     * 根据phone获取user
+     * @param phone
+     * @return
+     */
+    User getByPhone(String phone);
 }

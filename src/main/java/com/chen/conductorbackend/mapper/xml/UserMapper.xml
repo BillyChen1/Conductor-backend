@@ -9,6 +9,8 @@
         <result column="birth" property="birth"></result>
         <result column="address" property="address"></result>
         <result column="phone" property="phone"></result>
+        <result column="password" property="password"></result>
+        <result column="salt" property="salt"></result>
         <result column="wx_id" property="wxId"></result>
         <result column="longitude" property="longitude"></result>
         <result column="latitude" property="latitude"></result>
