@@ -10,6 +10,9 @@ import com.chen.conductorbackend.entity.Task;
 import com.chen.conductorbackend.entity.User;
 import com.chen.conductorbackend.enums.LoginType;
 import com.chen.conductorbackend.enums.LostStatus;
+import com.chen.conductorbackend.service.IAdminService;
+import com.chen.conductorbackend.service.ITaskService;
+import com.chen.conductorbackend.service.IUserService;
 import com.chen.conductorbackend.service.impl.TaskServiceImpl;
 import com.chen.conductorbackend.service.impl.UserServiceImpl;
 import com.chen.conductorbackend.shiro.CustomLoginToken;
@@ -43,9 +46,11 @@ public class AdminController {
     @Autowired
     private RedisUtil redisUtil;
     @Autowired
-    private UserServiceImpl userService;
+    private IUserService userService;
     @Autowired
-    private TaskServiceImpl taskService;
+    private ITaskService taskService;
+    @Autowired
+    private IAdminService adminService;
 
     /**
      * 管理员登录
@@ -64,19 +69,35 @@ public class AdminController {
         try{
             //shiro验证并更新redis缓存
             subject.login(loginToken);
-            if (redisUtil.hasKey(username)) {
-                redisUtil.expire(username, 24 * 60 * 60);
-            } else {
-                redisUtil.set(username, password, 24 * 60 * 60);
-            }
-
-            log.info("管理员登录成功");
+//            if (redisUtil.hasKey(username)) {
+//                redisUtil.expire(username, 24 * 60 * 60);
+//            } else {
+//                redisUtil.set(username, password, 24 * 60 * 60);
+//            }
+//
+//            log.info("管理员登录成功");
             return BaseResult.success();
 
         }catch (AuthenticationException e){
             log.warn("管理员账号或密码错误");
             return BaseResult.failWithCodeAndMsg(1, "账号或密码错误");
         }
+    }
+
+    /**
+     * 管理员注册
+     * @param adminLoginDTO
+     * @return
+     */
+    @PostMapping("/register")
+    @ApiOperation(value = "管理员注册")
+    public Object register(@RequestBody AdminLoginDTO adminLoginDTO){
+        String username = adminLoginDTO.getUsername();
+        String password = adminLoginDTO.getPassword();
+        if(adminService.register(username,password)){
+            return BaseResult.success();
+        }
+        return BaseResult.failWithCodeAndMsg(1,"注册失败");
     }
 
 
@@ -89,29 +110,11 @@ public class AdminController {
     @PostMapping("/user/member")
     @ApiOperation(value = "管理员添加新队员")
     public Object insertAUser(@RequestBody UserPostDTO userInfo) {
-//        if (!redisUtil.hasKey(token)) {
-//            log.warn("管理员未登录");
-//            return BaseResult.failWithCodeAndMsg(1, "管理员未登录");
-//        }
-
-        User user = new User();
-        BeanUtils.copyProperties(userInfo, user);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            user.setBirth(new java.sql.Date(sdf.parse(userInfo.getBirth()).getTime()));
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if(userService.register(userInfo)){
+            log.info("添加新队员成功");
+            return BaseResult.success();
         }
-        long timestamp = new Date().getTime();
-        user.setGmtCreate(timestamp);
-        user.setGmtModified(timestamp);
-        user.setRole(0);
-
-        userService.save(user);
-
-        log.info("添加成功");
-        return BaseResult.success();
+        return BaseResult.failWithCodeAndMsg(1,"添加新队员失败");
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.chen.conductorbackend.service;
 
+import com.chen.conductorbackend.dto.UserPostDTO;
 import com.chen.conductorbackend.dto.UserReturnDTO;
 import com.chen.conductorbackend.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -34,4 +35,10 @@ public interface IUserService extends IService<User> {
      * @return
      */
     User getByPhone(String phone);
+
+    /**
+     * 队员注册
+     * @return
+     */
+    boolean register(UserPostDTO userInfo);
 }

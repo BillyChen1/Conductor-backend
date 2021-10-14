@@ -20,4 +20,12 @@ public interface IAdminService extends IService<Admin> {
      * @return
      */
     Admin getByName(String name);
+
+    /**
+     * 管理员注册
+     * @param name
+     * @param password
+     * @return
+     */
+    boolean register(String name,String password);
 }

@@ -18,6 +18,9 @@ public class UserPostDTO implements Serializable {
     @ApiModelProperty(name = "phone", value = "队员联系方式", dataType = "String")
     private String phone;
 
+    @ApiModelProperty(name = "password", value = "队员联系方式", dataType = "String")
+    private String password;
+
     @ApiModelProperty(name = "birth", value = "队员出生年月日", dataType = "Integer")
     private String birth;
 

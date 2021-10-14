@@ -2,20 +2,27 @@ package com.chen.conductorbackend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chen.conductorbackend.dto.TaskReturnDTO;
+import com.chen.conductorbackend.dto.UserPostDTO;
 import com.chen.conductorbackend.dto.UserReturnDTO;
+import com.chen.conductorbackend.entity.Admin;
 import com.chen.conductorbackend.entity.Task;
 import com.chen.conductorbackend.entity.User;
 import com.chen.conductorbackend.enums.LostStatus;
 import com.chen.conductorbackend.mapper.UserMapper;
 import com.chen.conductorbackend.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.chen.conductorbackend.utils.SaltUtil;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -60,6 +67,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("phone",phone);
         return userMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public boolean register(UserPostDTO userInfo) {
+        try{
+            User user = new User();
+            BeanUtils.copyProperties(userInfo, user);
+            String salt = SaltUtil.getSalt(8);
+            Md5Hash md5Hash =new Md5Hash(userInfo.getPassword(),salt,1024);
+            user.setPassword(md5Hash.toHex());
+            user.setSalt(salt);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                user.setBirth(new java.sql.Date(sdf.parse(userInfo.getBirth()).getTime()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            user.setGmtCreate(System.currentTimeMillis());
+            user.setGmtModified(System.currentTimeMillis());
+            user.setRole(0);
+            userMapper.insert(user);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
 
