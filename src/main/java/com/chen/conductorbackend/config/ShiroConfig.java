@@ -1,6 +1,9 @@
 package com.chen.conductorbackend.config;
 
 
+import com.chen.conductorbackend.enums.LoginType;
+import com.chen.conductorbackend.shiro.CustomModularRealmAuthenticator;
+import com.chen.conductorbackend.shiro.CustomModularRealmAuthorizer;
 import com.chen.conductorbackend.shiro.realm.AdminRealm;
 import com.chen.conductorbackend.shiro.realm.UserRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -10,9 +13,10 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
 
 @Configuration
 public class ShiroConfig {
@@ -44,18 +48,34 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
         return shiroFilterFactoryBean;
     }
-    //创建安全管理器
+
+    /**
+     * 创建安全管理器
+     * @return
+     */
     @Bean
-    public DefaultWebSecurityManager getDefaultWebSecurityManager(Realm realm) {
+    public DefaultWebSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setRealm(realm);
+        //可以指定特定Realm处理认证
+        securityManager.setAuthenticator(new CustomModularRealmAuthenticator());
+        //可以指定特定Realm处理授权验证
+        securityManager.setAuthorizer(new CustomModularRealmAuthorizer());
+        List<Realm> realmList = new ArrayList<>();
+        realmList.add(getAdminRealm());
+        realmList.add(getUserRealm());
+        //这个放到后面，可以自动把realms赋值给Authenticator
+        securityManager.setRealms(realmList);
         return securityManager;
     }
 
-    //创建自定义AdminRealm
+    /**
+     * 创建自定义AdminRealm
+     * @return
+     */
     @Bean
-    public Realm getAdminRealm() {
+    public AdminRealm getAdminRealm() {
         AdminRealm realm = new AdminRealm();
+        realm.setName(LoginType.ADMIN_LOGIN.getType());
         HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
         //设置使用MD5加密算法
         credentialsMatcher.setHashAlgorithmName("md5");
@@ -65,10 +85,14 @@ public class ShiroConfig {
         return realm;
     }
 
-    //创建自定义UserRealm
+    /**
+     * 创建自定义UserRealm
+     * @return
+     */
     @Bean
-    public Realm getUserRealm() {
+    public UserRealm getUserRealm() {
         UserRealm realm = new UserRealm();
+        realm.setName(LoginType.USER_LOGIN.getType());
         HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
         //设置使用MD5加密算法
         credentialsMatcher.setHashAlgorithmName("md5");

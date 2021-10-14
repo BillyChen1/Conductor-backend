@@ -100,7 +100,6 @@ public class UserController {
     /**
      * 根据用户Id获取基本信息
      * @param uid
-     * @param token
      * @return
      */
     @GetMapping("check/{uid}")
@@ -108,11 +107,7 @@ public class UserController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "uid", value = "用户id", dataType = "Integer")
     })
-    public BaseResult getUserInfoByUid(@PathVariable("uid") Integer uid, @RequestHeader("Authorization") String token) {
-        if (!redisUtil.hasKey(token)) {
-            log.warn("用户未登录");
-            return BaseResult.failWithCodeAndMsg(1, "用户未登录");
-        }
+    public BaseResult getUserInfoByUid(@PathVariable("uid") Integer uid) {
 
         User user = userService.getById(uid);
         if (user == null) {
@@ -166,22 +161,12 @@ public class UserController {
     /**
      * 队员受理一条救援请求
      * @param requestHandleDTO
-     * @param token
      * @return
      */
     @PostMapping("/accept")
     @ApiOperation(value = "队员受理一条任务", notes = "队员受理一条任务")
-    public BaseResult acceptTask(@RequestBody RequestHandleDTO requestHandleDTO,
-                                 @RequestHeader("Authorization") String token) {
-        if (!redisUtil.hasKey(token)) {
-            log.warn("用户未登录");
-            return BaseResult.failWithCodeAndMsg(1, "用户未登录");
-        }
-        //如果登录的是普通用户，则无权限
-        if ("-1".equals(token)) {
-            log.warn("用户无权限");
-            return BaseResult.failWithCodeAndMsg(1, "无权限");
-        }
+    public BaseResult acceptTask(@RequestBody RequestHandleDTO requestHandleDTO) {
+
 
         Integer uid = requestHandleDTO.getUid();
         Integer requestId = requestHandleDTO.getRequestId();
@@ -243,22 +228,12 @@ public class UserController {
     /**
      * 队员完成一项任务
      * @param requestHandleDTO
-     * @param token
      * @return
      */
     @PostMapping("/complete")
     @ApiOperation(value = "队员完成一条任务", notes = "队员完成一条任务")
-    public BaseResult complete(@RequestBody RequestHandleDTO requestHandleDTO,
-                               @RequestHeader("Authorization") String token) {
-        if (!redisUtil.hasKey(token)) {
-            log.warn("用户未登录");
-            return BaseResult.failWithCodeAndMsg(1, "用户未登录");
-        }
-        //如果登录的是普通用户，则无权限
-        if ("-1".equals(token)) {
-            log.warn("用户无权限");
-            return BaseResult.failWithCodeAndMsg(1, "无权限");
-        }
+    public BaseResult complete(@RequestBody RequestHandleDTO requestHandleDTO) {
+
 
 
         Integer uid = requestHandleDTO.getUid();
@@ -305,7 +280,6 @@ public class UserController {
     /**
      * 获得和uid编号队员的队友列表（接手相同任务且任务的状态为进行中，那么这两个人就是队友）
      * @param uid
-     * @param token
      * @return
      */
     @GetMapping("/partner/{uid}")
@@ -313,17 +287,7 @@ public class UserController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "uid", value = "用户id", dataType = "Integer")
     })
-    public BaseResult getPartners(@PathVariable("uid") Integer uid,
-                                  @RequestHeader("Authorization") String token) {
-        if (!redisUtil.hasKey(token)) {
-            log.warn("用户未登录");
-            return BaseResult.failWithCodeAndMsg(1, "用户未登录");
-        }
-        //如果登录的是普通用户，则无权限
-        if ("-1".equals(token)) {
-            log.warn("用户无权限");
-            return BaseResult.failWithCodeAndMsg(1, "无权限");
-        }
+    public BaseResult getPartners(@PathVariable("uid") Integer uid) {
 
 
         List<UserReturnDTO> userList = userService.listPartnersByUid(uid);

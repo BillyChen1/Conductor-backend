@@ -8,15 +8,20 @@ import com.chen.conductorbackend.dto.UserPostDTO;
 import com.chen.conductorbackend.dto.UserReturnDTO;
 import com.chen.conductorbackend.entity.Task;
 import com.chen.conductorbackend.entity.User;
+import com.chen.conductorbackend.enums.LoginType;
 import com.chen.conductorbackend.enums.LostStatus;
 import com.chen.conductorbackend.service.impl.TaskServiceImpl;
 import com.chen.conductorbackend.service.impl.UserServiceImpl;
+import com.chen.conductorbackend.shiro.CustomLoginToken;
 import com.chen.conductorbackend.utils.RedisUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +40,6 @@ import java.util.List;
 @Slf4j
 public class AdminController {
 
-    private final String USERNAME = "admin";
-    private final String PASSWORD = "admin";
     @Autowired
     private RedisUtil redisUtil;
     @Autowired
@@ -56,7 +59,11 @@ public class AdminController {
         String username = adminLoginDTO.getUsername();
         String password = adminLoginDTO.getPassword();
 
-        if (USERNAME.equals(username) && PASSWORD.equals(password)) {
+        Subject subject = SecurityUtils.getSubject();
+        CustomLoginToken loginToken = new CustomLoginToken(username,password, LoginType.ADMIN_LOGIN);
+        try{
+            //shiro验证并更新redis缓存
+            subject.login(loginToken);
             if (redisUtil.hasKey(username)) {
                 redisUtil.expire(username, 24 * 60 * 60);
             } else {
@@ -64,10 +71,9 @@ public class AdminController {
             }
 
             log.info("管理员登录成功");
-            JSONObject token = new JSONObject();
-            token.put("token", username);
-            return BaseResult.successWithData(token);
-        } else {
+            return BaseResult.success();
+
+        }catch (AuthenticationException e){
             log.warn("管理员账号或密码错误");
             return BaseResult.failWithCodeAndMsg(1, "账号或密码错误");
         }
@@ -78,16 +84,15 @@ public class AdminController {
      * 管理员添加新队员
      *
      * @param userInfo 新队员信息
-     * @param token    token
      * @return true or false
      */
     @PostMapping("/user/member")
     @ApiOperation(value = "管理员添加新队员")
-    public Object insertAUser(@RequestBody UserPostDTO userInfo, @RequestHeader("Authorization") String token) {
-        if (!redisUtil.hasKey(token)) {
-            log.warn("管理员未登录");
-            return BaseResult.failWithCodeAndMsg(1, "管理员未登录");
-        }
+    public Object insertAUser(@RequestBody UserPostDTO userInfo) {
+//        if (!redisUtil.hasKey(token)) {
+//            log.warn("管理员未登录");
+//            return BaseResult.failWithCodeAndMsg(1, "管理员未登录");
+//        }
 
         User user = new User();
         BeanUtils.copyProperties(userInfo, user);
@@ -113,7 +118,6 @@ public class AdminController {
      * 管理员删除队员
      *
      * @param uid   user id
-     * @param token token
      * @return true or false
      */
     @DeleteMapping("/user/member/{uid}")
@@ -121,11 +125,7 @@ public class AdminController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "uid", value = "删除的用户id", dataType = "Integer")
     })
-    public Object deleteUserById(@PathVariable int uid, @RequestHeader("Authorization") String token) {
-        if (!redisUtil.hasKey(token)) {
-            log.warn("管理员未登录");
-            return BaseResult.failWithCodeAndMsg(1, "管理员未登录");
-        }
+    public Object deleteUserById(@PathVariable int uid) {
 
         boolean flag = userService.removeById(uid);
         //还需要删除redis缓存
@@ -146,12 +146,8 @@ public class AdminController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "uid", value = "更新的用户id", dataType = "Integer")
     })
-    public Object updateUserInfo(@PathVariable int uid, @RequestBody UserPostDTO userInfo
-            , @RequestHeader("Authorization") String token) {
-        if (!redisUtil.hasKey(token)) {
-            log.warn("管理员未登录");
-            return BaseResult.failWithCodeAndMsg(1, "管理员未登录");
-        }
+    public Object updateUserInfo(@PathVariable int uid, @RequestBody UserPostDTO userInfo) {
+
 
         User user = userService.getById(uid);
         BeanUtils.copyProperties(userInfo, user);
@@ -177,16 +173,11 @@ public class AdminController {
 
     /**
      * 管理员获取所有用户的信息，其中每个用户还包含其接手且正在进行的任务列表
-     * @param token
      * @return
      */
     @GetMapping("/user/member")
     @ApiOperation(value = "管理员获取所有队员信息")
-    public BaseResult listAllUserInfo(@RequestHeader("Authorization") String token) {
-        if (!redisUtil.hasKey(token)) {
-            log.warn("管理员未登录");
-            return BaseResult.failWithCodeAndMsg(1, "管理员未登录");
-        }
+    public BaseResult listAllUserInfo() {
 
         List<UserReturnDTO> userList = userService.listAllUserInfo();
 

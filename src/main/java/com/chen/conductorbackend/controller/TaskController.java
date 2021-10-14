@@ -49,7 +49,6 @@ public class TaskController {
      * 查看一条报案信息详情
      *
      * @param requestId task id
-     * @param token     token
      * @return taskReturnDTO
      */
     @GetMapping("/{requestId}")
@@ -57,11 +56,8 @@ public class TaskController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "requestId", value = "任务id", required = true, dataType = "Integer")
     })
-    public Object getTaskDetailById(@PathVariable int requestId, @RequestHeader("Authorization") String token) {
-        if (!redisUtil.hasKey(token)) {
-            log.warn("未登录");
-            return BaseResult.failWithCodeAndMsg(1, "未登录");
-        }
+    public Object getTaskDetailById(@PathVariable int requestId) {
+
 
         Task task = taskService.getById(requestId);
         TaskReturnDTO taskReturnDTO = new TaskReturnDTO();
@@ -81,12 +77,7 @@ public class TaskController {
      */
     @PostMapping("/submit")
     @ApiOperation(value = "家属提交报案信息", notes = "家属提交报案信息")
-    public BaseResult submitTask(@RequestBody TaskPostDTO taskPostDTO, @RequestHeader("Authorization") String token) {
-        if (!redisUtil.hasKey(token)) {
-            log.warn("用户未登录");
-            return BaseResult.failWithCodeAndMsg(1, "用户未登录");
-        }
-
+    public BaseResult submitTask(@RequestBody TaskPostDTO taskPostDTO) {
         Task task = new Task();
         BeanUtils.copyProperties(taskPostDTO, task);
         //设置状态
@@ -109,7 +100,6 @@ public class TaskController {
      * 家属修改报案信息
      * @param taskPostDTO
      * @param requetId
-     * @param token
      * @return
      */
     @PostMapping("/submit/{requestId}")
@@ -118,13 +108,7 @@ public class TaskController {
             @ApiImplicitParam(name = "requestId", value = "案件任务的id")
     })
     public BaseResult updateTask(@RequestBody TaskPostDTO taskPostDTO,
-                                 @PathVariable("requestId") Integer requetId,
-                                 @RequestHeader("Authorization") String token) {
-        if (!redisUtil.hasKey(token)) {
-            log.warn("用户未登录");
-            return BaseResult.failWithCodeAndMsg(1, "用户未登录");
-        }
-
+                                 @PathVariable("requestId") Integer requetId) {
 
         //从数据库中寻找旧的报案信息
         Task dbTask = taskService.getById(requetId);
@@ -151,34 +135,24 @@ public class TaskController {
      * 根据状态以及用户id获取任务列表
      * @param status    希望获取指定状态的任务
      * @param uid   希望获得该用户接手的任务
-     * @param token
      * @return
      */
     @GetMapping("")
     @ApiOperation(value = "（管理员可能会用到）根据一定条件获取任务列表", notes = "根据案件的状态以及案件的受理人id，查询满足条件的案件")
     public BaseResult listTasksByUidAndStatus(@RequestParam(value = "status", required = false) Integer status,
-                                              @RequestParam(value = "uid", required = false) Integer uid,
-                                              @RequestHeader("Authorization") String token) {
-        if (!redisUtil.hasKey(token)) {
-            log.warn("用户未登录");
-            return BaseResult.failWithCodeAndMsg(1, "用户未登录");
-        }
+                                              @RequestParam(value = "uid", required = false) Integer uid) {
+
         List<TaskReturnDTO> taskList = taskService.listTasksByUidAndStatus(uid, status);
         return BaseResult.successWithData(taskList);
     }
 
     /**
      * 列出可用的任务 包括未受理0 进行中1 已超时3的
-     * @param token
      * @return
      */
     @GetMapping("/available")
     @ApiOperation(value = "查询系统中可用的任务", notes = "包括未受理、进行中、已超时的任务")
-    public BaseResult listAvailableTasks(@RequestHeader("Authorization") String token) {
-        if (!redisUtil.hasKey(token)) {
-            log.warn("用户未登录");
-            return BaseResult.failWithCodeAndMsg(1, "用户未登录");
-        }
+    public BaseResult listAvailableTasks() {
 
         QueryWrapper<Task> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("lost_status", LostStatus.UNACCEPTED.getStatus())

@@ -2,6 +2,7 @@ package com.chen.conductorbackend.service;
 
 import com.chen.conductorbackend.entity.Admin;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.stereotype.Service;
 
 /**
  * <p>
