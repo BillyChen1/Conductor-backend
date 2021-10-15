@@ -31,6 +31,4 @@ public class UserInfoDTO implements Serializable {
     @ApiModelProperty(name = "role", value = "用户角色", dataType = "Integer")
     private Integer role;
 
-    @ApiModelProperty(name = "token", value = "token", dataType = "String")
-    private String token;
 }

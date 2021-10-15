@@ -1,7 +1,5 @@
 package com.chen.conductorbackend.enums;
 
-import lombok.Data;
-
 public enum LoginType {
     ADMIN_LOGIN(0,"管理员登录"),
     USER_LOGIN(1,"队员登录");

@@ -8,17 +8,22 @@ import com.chen.conductorbackend.dto.*;
 import com.chen.conductorbackend.entity.Task;
 import com.chen.conductorbackend.entity.User;
 import com.chen.conductorbackend.entity.UserTask;
+import com.chen.conductorbackend.enums.LoginType;
 import com.chen.conductorbackend.enums.LostStatus;
 import com.chen.conductorbackend.enums.Role;
 import com.chen.conductorbackend.service.ITaskService;
 import com.chen.conductorbackend.service.IUserService;
 import com.chen.conductorbackend.service.IUserTaskService;
+import com.chen.conductorbackend.shiro.CustomLoginToken;
 import com.chen.conductorbackend.utils.RedisUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -54,26 +59,39 @@ public class UserController {
 
     @Autowired
     private ITaskService taskService;
+
     /**
      * 用户登录
-     * @param phone
+     * @param userLoginDTO
      * @return
      */
-    @GetMapping("/login")
-    @ApiOperation(value = "小程序用户登录", notes = "以手机号为依据，判断用户的身份是队员还是普通用户")
+    @PostMapping("/login")
+    @ApiOperation(value = "小程序用户登录", notes = "以手机号、密码为依据，判断用户的身份是队员还是普通用户")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "phone", value = "微信号（直接当作手机号）", dataType = "String")
     })
-    public BaseResult login(@RequestParam("phone") String phone) {
+    public BaseResult login(@RequestBody UserLoginDTO userLoginDTO) {
+        String phone = userLoginDTO.getPhone();
+        String password = userLoginDTO.getPassword();
+        Subject subject = SecurityUtils.getSubject();
+        CustomLoginToken loginToken = new CustomLoginToken(phone,password, LoginType.USER_LOGIN);
+
         User user = userService.getOne(new QueryWrapper<User>().eq("phone", phone));
         UserInfoDTO userInfo = new UserInfoDTO();
-        String token = null;
+
+        //存在该用户
         if (user != null) {
+            try {
+                subject.login(loginToken);
+            } catch (AuthenticationException e) {
+                e.printStackTrace();
+                log.error("电话或密码错误");
+                return BaseResult.failWithCodeAndMsg(1,"电话或密码错误");
+            }
+
             BeanUtils.copyProperties(user, userInfo);
             userInfo.setUid(user.getId());
             userInfo.setAge(Period.between(user.getBirth().toLocalDate(), LocalDate.now()).getYears());
-            token = "" + user.getId();
-            userInfo.setToken(token);
         } else {
             //新建一条用户记录返回
             log.info("系统里无该队员，新建一条用户记录返回");
@@ -84,16 +102,13 @@ public class UserController {
             userInfo.setGender("1");
             userInfo.setAddress("无地址");
             userInfo.setUsername("普通成员");
-            //对于普通成员，token统一为1
-            token = "-1";
-            userInfo.setToken(token);
         }
         //将uid当作token写入redis
-        if (redisUtil.hasKey(token)) {
-            redisUtil.expire(token, 24 * 60 * 60);
-        } else {
-            redisUtil.set(token, token, 24 * 60 * 60);
-        }
+//        if (redisUtil.hasKey(token)) {
+//            redisUtil.expire(token, 24 * 60 * 60);
+//        } else {
+//            redisUtil.set(token, token, 24 * 60 * 60);
+//        }
         return BaseResult.successWithData(userInfo);
     }
 
