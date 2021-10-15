@@ -32,7 +32,6 @@ public class ImageUtil {
     @Value("${aliyun.accessKeySecret}")
     private String accessKeySecret;
 
-
     @Value("${aliyun.bucketName}")
     private String bucketName;
 
