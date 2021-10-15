@@ -20,6 +20,7 @@ import java.util.Map;
 
 @Configuration
 public class ShiroConfig {
+
     //ShiroFilter过滤所有请求
     @Bean
     public ShiroFilterFactoryBean getShiroFilterFactoryBean(DefaultWebSecurityManager securityManager) {
@@ -30,20 +31,25 @@ public class ShiroConfig {
         //配置系统公共资源
         Map<String, String> map = new HashMap<String, String>();
 
-//        //表示这个为公共资源 一定是在受限资源上面
-//        map.put("/admin/login","anon");
-//        map.put("/record/search","anon");
-//
-//        //表示这个受限资源需要认证和授权
-//        map.put("/admin/logout","authc");
-//        map.put("/admin/register","authc");
-//        map.put("/record/delete","authc");
-//        map.put("/record/post","authc");
-//        map.put("/record/update","authc");
-//        map.put("/record/upload","authc");
+        //admin和user的拦截策略理应不同 暂未找到合适方法
 
-        // 设置认证界面路径
-//        shiroFilterFactoryBean.setLoginUrl("/admin/login");
+        //表示这个为公共资源 一定是在受限资源上面
+        map.put("/admin/login","anon");
+        map.put("/user/login","anon");
+        map.put("/task/**","anon");
+        map.put("/theme/**","anon");
+
+        //放行Swagger2页面，需要放行这些
+        map.put("/swagger-ui.html","anon");
+        map.put("/swagger/**","anon");
+        map.put("/webjars/**", "anon");
+        map.put("/swagger-resources/**","anon");
+        map.put("/v2/**","anon");
+        map.put("/static/**", "anon");
+
+
+        //表示这个受限资源需要认证和授权
+        map.put("/**","authc");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
         return shiroFilterFactoryBean;

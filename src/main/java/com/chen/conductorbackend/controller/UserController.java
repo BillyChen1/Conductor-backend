@@ -112,6 +112,19 @@ public class UserController {
         return BaseResult.successWithData(userInfo);
     }
 
+    @GetMapping
+    @ApiOperation(value = "用户退出")
+    public Object logout(){
+        try{
+            Subject subject = SecurityUtils.getSubject();
+            subject.logout();
+            return BaseResult.success();
+        }catch (Exception e){
+            e.printStackTrace();
+            return BaseResult.failWithCodeAndMsg(1,"退出失败");
+        }
+    }
+
     /**
      * 根据用户Id获取基本信息
      * @param uid

@@ -17,14 +17,12 @@ import com.chen.conductorbackend.service.impl.TaskServiceImpl;
 import com.chen.conductorbackend.service.impl.UserServiceImpl;
 import com.chen.conductorbackend.shiro.CustomLoginToken;
 import com.chen.conductorbackend.utils.RedisUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.subject.Subject;
+import org.reactivestreams.Subscription;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -81,6 +79,23 @@ public class AdminController {
         }catch (AuthenticationException e){
             log.warn("管理员账号或密码错误");
             return BaseResult.failWithCodeAndMsg(1, "账号或密码错误");
+        }
+    }
+
+    /**
+     * 管理员退出
+     * @return
+     */
+    @GetMapping("/logout")
+    @ApiOperation(value = "管理员退出")
+    public Object logout(){
+        try{
+            Subject subject = SecurityUtils.getSubject();
+            subject.logout();
+            return BaseResult.success();
+        }catch (Exception e){
+            e.printStackTrace();
+            return BaseResult.failWithCodeAndMsg(1,"退出失败");
         }
     }
 
