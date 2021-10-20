@@ -42,12 +42,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public List<UserReturnDTO> listAllUserInfo() {
 
-        //List<User> users = userMapper.listAllUserInfo();
-        List<User> users = userMapper.selectList(new QueryWrapper<>());
-
+        List<User> users = userMapper.listAllUserInfo();
         List<UserReturnDTO> userDTOList = new ArrayList<>(users.size());
         //将List<User>转化为List<UserReturnDTO>
         usersToUserDTOS(users, userDTOList);
+        System.out.println(userDTOList);
+
         return userDTOList;
     }
 

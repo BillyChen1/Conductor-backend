@@ -1,17 +1,15 @@
 package com.chen.conductorbackend.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDate;
-
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.apache.shiro.crypto.hash.Md5Hash;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
@@ -73,4 +71,9 @@ public class User implements Serializable {
     @ApiModelProperty(value = "队员接受的任务列表")
     @TableField(exist = false)
     private List<Task> tasks;
+
+    public void changPassword(String newPassword) {
+        Md5Hash md5Hash =new Md5Hash(newPassword,salt,1024);
+        this.setPassword(md5Hash.toHex());
+    }
 }

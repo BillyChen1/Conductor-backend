@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -173,10 +172,13 @@ public class AdminController {
             if (userInfo.getBirth() != null) {
                 user.setBirth(new java.sql.Date(sdf.parse(userInfo.getBirth()).getTime()));
             }
+            if(userInfo.getPassword()!=null){
+                user.changPassword(user.getPassword());
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        user.setGmtModified(new Date().getTime());
+        user.setGmtModified(System.currentTimeMillis());
 
         if (userService.updateById(user)) {
             log.info("编辑队员信息成功");
