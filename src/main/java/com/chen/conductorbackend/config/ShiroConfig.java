@@ -39,6 +39,7 @@ public class ShiroConfig {
         map.put("/task/**","anon");
         map.put("/theme/**","anon");
 
+
         //放行Swagger2页面，需要放行这些
         map.put("/swagger-ui.html","anon");
         map.put("/swagger/**","anon");
@@ -47,9 +48,10 @@ public class ShiroConfig {
         map.put("/v2/**","anon");
         map.put("/static/**", "anon");
 
+        map.put("/**","anon");
 
         //表示这个受限资源需要认证和授权
-        map.put("/**","authc");
+        //map.put("/**","authc");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
         return shiroFilterFactoryBean;

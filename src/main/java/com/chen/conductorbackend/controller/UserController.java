@@ -154,21 +154,20 @@ public class UserController {
     /**
      * 更新队员的地址信息
      * @param updateLocationDTO
-     * @param token
      * @return
      */
     @PostMapping("/updateLocation")
     @ApiOperation(value = "更新队员的实时位置", notes = "更新队员的地址（经纬度）")
-    public BaseResult updateLocation(@RequestBody UpdateLocationDTO updateLocationDTO, @RequestHeader("Authorization") String token) {
-        if (!redisUtil.hasKey(token)) {
-            log.warn("用户未登录");
-            return BaseResult.failWithCodeAndMsg(1, "用户未登录");
-        }
-        //如果登录的是普通用户，则无权限
-        if ("-1".equals(token)) {
-            log.warn("用户无权限");
-            return BaseResult.failWithCodeAndMsg(1, "无权限");
-        }
+    public BaseResult updateLocation(@RequestBody UpdateLocationDTO updateLocationDTO) {
+//        if (!redisUtil.hasKey(token)) {
+//            log.warn("用户未登录");
+//            return BaseResult.failWithCodeAndMsg(1, "用户未登录");
+//        }
+//        //如果登录的是普通用户，则无权限
+//        if ("-1".equals(token)) {
+//            log.warn("用户无权限");
+//            return BaseResult.failWithCodeAndMsg(1, "无权限");
+//        }
 
         User user = userService.getById(updateLocationDTO.getUid());
         if (user == null) {

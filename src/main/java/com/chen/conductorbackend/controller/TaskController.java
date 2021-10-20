@@ -82,6 +82,7 @@ public class TaskController {
         BeanUtils.copyProperties(taskPostDTO, task);
         //设置状态
         task.setLostStatus(LostStatus.UNACCEPTED.getStatus());
+        task.setRescueNum(0);
 
         //将yyyy-MM-dd形式的字符串转化为Date对象存入数据库
         LocalDate lostBirth = LocalDate.parse(taskPostDTO.getLostBirth(), DateTimeFormatter.ISO_DATE);

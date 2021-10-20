@@ -3,34 +3,29 @@ package com.chen.conductorbackend.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.chen.conductorbackend.common.BaseResult;
 import com.chen.conductorbackend.dto.AdminLoginDTO;
-import com.chen.conductorbackend.dto.TaskReturnDTO;
 import com.chen.conductorbackend.dto.UserPostDTO;
 import com.chen.conductorbackend.dto.UserReturnDTO;
-import com.chen.conductorbackend.entity.Task;
 import com.chen.conductorbackend.entity.User;
 import com.chen.conductorbackend.enums.LoginType;
-import com.chen.conductorbackend.enums.LostStatus;
 import com.chen.conductorbackend.service.IAdminService;
 import com.chen.conductorbackend.service.ITaskService;
 import com.chen.conductorbackend.service.IUserService;
-import com.chen.conductorbackend.service.impl.TaskServiceImpl;
-import com.chen.conductorbackend.service.impl.UserServiceImpl;
 import com.chen.conductorbackend.shiro.CustomLoginToken;
 import com.chen.conductorbackend.utils.RedisUtil;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.subject.Subject;
-import org.reactivestreams.Subscription;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.Date;
 import java.util.List;
 
@@ -74,7 +69,9 @@ public class AdminController {
 //            }
 //
 //            log.info("管理员登录成功");
-            return BaseResult.success();
+            JSONObject token = new JSONObject();
+            token.put("token", subject.getSession().getId().toString());
+            return BaseResult.successWithData(token);
 
         }catch (AuthenticationException e){
             log.warn("管理员账号或密码错误");
@@ -146,17 +143,18 @@ public class AdminController {
     public Object deleteUserById(@PathVariable int uid) {
 
         boolean flag = userService.removeById(uid);
+        return BaseResult.success();
         //还需要删除redis缓存
-        if (redisUtil.hasKey(uid + "")) {
-            redisUtil.expire("" + uid, -1);
-        }
-        if (flag) {
-            log.info("删除队员成功");
-            return BaseResult.success();
-        } else {
-            log.warn("删除队员失败");
-            return BaseResult.failWithCodeAndMsg(1, "没有指定id的队员");
-        }
+//        if (redisUtil.hasKey(uid + "")) {
+//            redisUtil.expire("" + uid, -1);
+//        }
+//        if (flag) {
+//            log.info("删除队员成功");
+//            return BaseResult.success();
+//        } else {
+//            log.warn("删除队员失败");
+//            return BaseResult.failWithCodeAndMsg(1, "没有指定id的队员");
+//        }
     }
 
     @PostMapping("/user/member/{uid}")

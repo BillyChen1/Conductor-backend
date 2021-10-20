@@ -16,13 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -59,6 +55,7 @@ public class ImageController {
     @ApiOperation(value = "匹配图片", notes = "返回最相似的老人")
     public BaseResult compareImage(@RequestParam("srcUrl") String srcUrl) {
         List<Task> tasks = taskService.list();
+        System.out.println(tasks.size());
         Task resultTask = null;
         //置信度设为70
         Float threshold = 70F;
@@ -68,9 +65,13 @@ public class ImageController {
         for (Task task : tasks) {
             CompareFaceResponseBody.CompareFaceResponseBodyData responseBodyData = null;
             try {
+                System.out.println(srcUrl);
+                System.out.println(task.getPhoto());
                 responseBodyData = imageUtil.getImageCompareResult(srcUrl, task.getPhoto());
                 log.info("taskId: "+task.getId()+"---置信度"+responseBodyData.confidence);
             } catch (Exception e) {
+                e.printStackTrace();
+                log.info("图片对比出错");
                 return BaseResult.failWithCodeAndMsg(1, "图片比对出错，请重试");
             }
             if (responseBodyData.confidence > threshold) {

@@ -2,23 +2,18 @@ package com.chen.conductorbackend.utils;
 
 import com.aliyun.facebody20191230.Client;
 import com.aliyun.facebody20191230.models.CompareFaceRequest;
+import com.aliyun.facebody20191230.models.CompareFaceResponseBody;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectRequest;
+import com.aliyun.teaopenapi.models.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import com.aliyun.tea.*;
-import com.aliyun.facebody20191230.*;
-import com.aliyun.facebody20191230.models.*;
-import com.aliyun.teaopenapi.*;
-import com.aliyun.teaopenapi.models.*;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
-import java.util.List;
 
 @Component
 public class ImageUtil {
@@ -62,7 +57,7 @@ public class ImageUtil {
 
         //返回临时的签名url
         // 设置URL过期时间为1年。
-        Date expiration = new Date(new Date().getTime() + 3600 * 1000 * 24 * 365);
+        Date expiration = new Date(System.currentTimeMillis()+ 3600 * 1000 * 24 * 365);
         // 生成以GET方法访问的签名URL，访客可以直接通过浏览器访问相关内容。
         URL url = ossClient.generatePresignedUrl(bucketName, fileName, expiration);
 
@@ -73,14 +68,17 @@ public class ImageUtil {
     }
 
     public CompareFaceResponseBody.CompareFaceResponseBodyData getImageCompareResult(String urlA, String urlB) throws Exception {
+
         Config config = new Config()
                 // 您的AccessKey ID
                 .setAccessKeyId(accessKeyId)
                 // 您的AccessKey Secret
                 .setAccessKeySecret(accessKeySecret);
+//        config.regionId = "cn-shanghai";
         // 访问的域名
         config.endpoint = facebodyEndpoint;
         Client facebodyClient = new Client(config);
+
         CompareFaceRequest compareFaceRequest = new CompareFaceRequest()
                 .setImageURLA(urlA)
                 .setImageURLB(urlB);
@@ -89,4 +87,5 @@ public class ImageUtil {
         return facebodyClient.compareFace(compareFaceRequest).getBody().getData();
 
     }
+
 }
