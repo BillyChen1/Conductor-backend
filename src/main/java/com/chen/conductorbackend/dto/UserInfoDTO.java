@@ -1,12 +1,10 @@
 package com.chen.conductorbackend.dto;
 
-import com.chen.conductorbackend.entity.Task;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 @ApiModel(description = "用户基本信息")
@@ -30,5 +28,8 @@ public class UserInfoDTO implements Serializable {
 
     @ApiModelProperty(name = "role", value = "用户角色", dataType = "Integer")
     private Integer role;
+
+    @ApiModelProperty(name = "sessionId", value = "sessionId", dataType = "String")
+    private String sessionId;
 
 }

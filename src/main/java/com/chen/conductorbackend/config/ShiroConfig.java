@@ -40,6 +40,7 @@ public class ShiroConfig {
         map.put("/user/login","anon");
         map.put("/task/**","anon");
         map.put("/theme/**","anon");
+        map.put("/image/**","anon");
 
 
         //放行Swagger2页面，需要放行这些
@@ -50,7 +51,7 @@ public class ShiroConfig {
         map.put("/v2/**","anon");
         map.put("/static/**", "anon");
 
-        //map.put("/**","anon");
+//        map.put("/**","anon");
 
         //表示这个受限资源需要认证和授权
         map.put("/**","authc");

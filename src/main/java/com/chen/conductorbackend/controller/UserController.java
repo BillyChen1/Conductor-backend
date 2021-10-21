@@ -79,6 +79,7 @@ public class UserController {
         User user = userService.getOne(new QueryWrapper<User>().eq("phone", phone));
         UserInfoDTO userInfo = new UserInfoDTO();
 
+
         //存在该用户
         if (user != null) {
             try {
@@ -92,6 +93,7 @@ public class UserController {
             BeanUtils.copyProperties(user, userInfo);
             userInfo.setUid(user.getId());
             userInfo.setAge(Period.between(user.getBirth().toLocalDate(), LocalDate.now()).getYears());
+            userInfo.setSessionId(subject.getSession().getId().toString());
         } else {
             //新建一条用户记录返回
             log.info("系统里无该队员，新建一条用户记录返回");
@@ -102,6 +104,7 @@ public class UserController {
             userInfo.setGender("1");
             userInfo.setAddress("无地址");
             userInfo.setUsername("普通成员");
+            userInfo.setSessionId("");
         }
         return BaseResult.successWithData(userInfo);
     }
