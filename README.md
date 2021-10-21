@@ -1,3 +1,13 @@
+
+#2021.10.21 
+删掉了原`redis`模拟的登录与权限管理
+增加了`shiro`权限管理，配置了俩个`reaml`:`AdminRealm` `UserReaml`
+主要代码在 `shiro`和`config/ShiroConfig`中
+后端数据库没有配置复杂的权限验证 只做了普通的路径拦截 所有登陆后 user其实是可以使用admin接口的
+
+
+##以下是原接口文档，存在变化，可运行代码通过`swagger`查看最新接口
+
 # 指挥系统Java后端
 
 # 接口文档

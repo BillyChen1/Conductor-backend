@@ -33,6 +33,7 @@ import java.util.List;
 @Api(description = "管理员有关api")
 @CrossOrigin
 @Slf4j
+
 public class AdminController {
 
     @Autowired
@@ -50,6 +51,7 @@ public class AdminController {
      * @param adminLoginDTO 账号和密码
      * @return code: 0-->success 1-->fail   token
      */
+
     @PostMapping("/login")
     @ApiOperation(value = "管理员登陆")
     public Object login(@RequestBody AdminLoginDTO adminLoginDTO) {
@@ -59,18 +61,8 @@ public class AdminController {
         Subject subject = SecurityUtils.getSubject();
         CustomLoginToken loginToken = new CustomLoginToken(username,password, LoginType.ADMIN_LOGIN);
         try{
-            //shiro验证并更新redis缓存
+            //shiro验证
             subject.login(loginToken);
-//            if (redisUtil.hasKey(username)) {
-//                redisUtil.expire(username, 24 * 60 * 60);
-//            } else {
-//                redisUtil.set(username, password, 24 * 60 * 60);
-//            }
-//
-//            log.info("管理员登录成功");
-//            JSONObject token = new JSONObject();
-//            token.put("token", subject.getSession().getId().toString());
-//            return BaseResult.successWithData(token);
             JSONObject sessionId = new JSONObject();
             sessionId.put("sessionId", subject.getSession().getId().toString());
             return BaseResult.successWithData(sessionId);
@@ -144,19 +136,10 @@ public class AdminController {
     })
     public Object deleteUserById(@PathVariable int uid) {
 
-        boolean flag = userService.removeById(uid);
-        return BaseResult.success();
-        //还需要删除redis缓存
-//        if (redisUtil.hasKey(uid + "")) {
-//            redisUtil.expire("" + uid, -1);
-//        }
-//        if (flag) {
-//            log.info("删除队员成功");
-//            return BaseResult.success();
-//        } else {
-//            log.warn("删除队员失败");
-//            return BaseResult.failWithCodeAndMsg(1, "没有指定id的队员");
-//        }
+        if(userService.removeById(uid)){
+            return BaseResult.success();
+        }
+        return BaseResult.failWithCodeAndMsg(1,"删除失败");
     }
 
     @PostMapping("/user/member/{uid}")

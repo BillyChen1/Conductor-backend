@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * 最高级别的拦截器 用于过滤前端的option预请求
+ */
 @Configuration
 public class CrosFilter implements Filter {
     @Override
@@ -24,7 +27,6 @@ public class CrosFilter implements Filter {
 
         //OPTIONS请求直接放行
         if ("OPTIONS".equals(request.getMethod())) {
-            //response.setStatus(HttpStatus.NO_CONTENT.value());
             response.setStatus(HttpStatus.OK.value());
             return;
         } else {

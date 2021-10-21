@@ -103,12 +103,6 @@ public class UserController {
             userInfo.setAddress("无地址");
             userInfo.setUsername("普通成员");
         }
-        //将uid当作token写入redis
-//        if (redisUtil.hasKey(token)) {
-//            redisUtil.expire(token, 24 * 60 * 60);
-//        } else {
-//            redisUtil.set(token, token, 24 * 60 * 60);
-//        }
         return BaseResult.successWithData(userInfo);
     }
 
@@ -159,16 +153,6 @@ public class UserController {
     @PostMapping("/updateLocation")
     @ApiOperation(value = "更新队员的实时位置", notes = "更新队员的地址（经纬度）")
     public BaseResult updateLocation(@RequestBody UpdateLocationDTO updateLocationDTO) {
-//        if (!redisUtil.hasKey(token)) {
-//            log.warn("用户未登录");
-//            return BaseResult.failWithCodeAndMsg(1, "用户未登录");
-//        }
-//        //如果登录的是普通用户，则无权限
-//        if ("-1".equals(token)) {
-//            log.warn("用户无权限");
-//            return BaseResult.failWithCodeAndMsg(1, "无权限");
-//        }
-
         User user = userService.getById(updateLocationDTO.getUid());
         if (user == null) {
             log.warn("无法找到该Id用户");
@@ -320,7 +304,6 @@ public class UserController {
         List<UserReturnDTO> userList = userService.listPartnersByUid(uid);
 
         return BaseResult.successWithData(userList);
-
 
     }
 }
