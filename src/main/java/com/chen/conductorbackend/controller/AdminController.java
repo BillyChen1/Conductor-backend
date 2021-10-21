@@ -68,9 +68,12 @@ public class AdminController {
 //            }
 //
 //            log.info("管理员登录成功");
-            JSONObject token = new JSONObject();
-            token.put("token", subject.getSession().getId().toString());
-            return BaseResult.successWithData(token);
+//            JSONObject token = new JSONObject();
+//            token.put("token", subject.getSession().getId().toString());
+//            return BaseResult.successWithData(token);
+            JSONObject sessionId = new JSONObject();
+            sessionId.put("sessionId", subject.getSession().getId().toString());
+            return BaseResult.successWithData(sessionId);
 
         }catch (AuthenticationException e){
             log.warn("管理员账号或密码错误");

@@ -4,10 +4,12 @@ package com.chen.conductorbackend.config;
 import com.chen.conductorbackend.enums.LoginType;
 import com.chen.conductorbackend.shiro.CustomModularRealmAuthenticator;
 import com.chen.conductorbackend.shiro.CustomModularRealmAuthorizer;
+import com.chen.conductorbackend.shiro.CustomSessionManager;
 import com.chen.conductorbackend.shiro.realm.AdminRealm;
 import com.chen.conductorbackend.shiro.realm.UserRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
@@ -48,10 +50,10 @@ public class ShiroConfig {
         map.put("/v2/**","anon");
         map.put("/static/**", "anon");
 
-        map.put("/**","anon");
+        //map.put("/**","anon");
 
         //表示这个受限资源需要认证和授权
-        //map.put("/**","authc");
+        map.put("/**","authc");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
         return shiroFilterFactoryBean;
@@ -64,10 +66,16 @@ public class ShiroConfig {
     @Bean
     public DefaultWebSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        //可以指定特定Realm处理认证
+        //指定特定Realm处理认证
         securityManager.setAuthenticator(new CustomModularRealmAuthenticator());
-        //可以指定特定Realm处理授权验证
+        //指定特定Realm处理授权验证
         securityManager.setAuthorizer(new CustomModularRealmAuthorizer());
+
+        //指定特定的session管理器 采用shiro默认缓存
+        CustomSessionManager sessionManager = new CustomSessionManager();
+        sessionManager.setSessionDAO(new EnterpriseCacheSessionDAO());
+        securityManager.setSessionManager(sessionManager);
+
         List<Realm> realmList = new ArrayList<>();
         realmList.add(getAdminRealm());
         realmList.add(getUserRealm());
@@ -109,4 +117,6 @@ public class ShiroConfig {
         realm.setCredentialsMatcher(credentialsMatcher);
         return realm;
     }
+
+
 }
